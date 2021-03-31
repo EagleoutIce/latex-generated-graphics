@@ -15,14 +15,14 @@
 }
 
 % x | y | angle | steps | WalkerCs | prefix
-\def\Rorschach@Walk#1#2#3#4#5#6{
-  \gdef\CurX{#1} \gdef\CurY{#2} \gdef\CurAng{#3}
+\def\Rorschach@Walk#1#2#3#4#5#6{%
+  \def\CurX{#1}\def\CurY{#2}\def\CurAng{#3}
   \foreach \step in {1,...,#4} {
     \pgfmathsetmacro\Tarlength{2.5-1*\step/#4}
     \csname #5\endcsname{\Tarlength}{\CurAng}% calc next
-    \pgfmathsetmacro\ColGrading{100-75*\step/#4}
-    \fill[\randcol!\ColGrading,rorschach@path] (\CurX,\CurY) -- ++(\CurTarX,\CurTarY);
-    \pgfmathsetmacro\NewCurX{\CurX+\CurTarX}\pgfmathsetmacro\NewCurY{\CurY+\CurTarY}
+    \fill[\randcol,rorschach@path] (\CurX,\CurY) -- ++(\CurTarX,\CurTarY);
+    \pgfmathsetmacro\NewCurX{\CurX+\CurTarX}
+    \pgfmathsetmacro\NewCurY{\CurY+\CurTarY}
     \coordinate (#6\step) at(\NewCurX,\NewCurY);
     \global\let\CurX\NewCurX \global\let\CurY\NewCurY \global\let\CurAng\CurTarAng
   }
@@ -53,16 +53,18 @@
 \newcommand*\GenerateRorschach[1][\z@]{%
 \savebox\ltx@rorschach@b{%
 \begin{tikzpicture}
-  \def\max{e} \def\stepmax{15}
-  \foreach \a[count=\i] in {a,...,\max}{
+  \def\ltx@rorschach@max{5}%
+  \def\ltx@rorschach@stepmax{25}
+  \foreach \ltx@rorschach@a[count=\i] in %
+        {1,...,\ltx@rorschach@max}{
     \def\randcol{green}% TODO: randcol
     \pgfmathsetmacro\@StartX{15*rand}
     \pgfmathsetmacro\@StartY{6*rand}
-    \edef\@tmp{\noexpand\Rorschach@Walk{\@StartX}{\@StartY}{10\i}{\stepmax}{Rorschach@NextRandCoords}{\a}}\@tmp;
-    \edef\@tmp{\noexpand\fill[black,rorschach@path] \noexpand\Rorschach@Fillcreation{\a}{\stepmax}}\@tmp;
+    \Rorschach@Walk{\@StartX}{\@StartY}{10\i}{\ltx@rorschach@stepmax}{Rorschach@NextRandCoords}{\ltx@rorschach@a};
+    \fill[black,rorschach@path] \Rorschach@Fillcreation{\ltx@rorschach@a}{\ltx@rorschach@stepmax};
   }
 \end{tikzpicture}}%
-\parbox{2\wd\ltx@rorschach@b}{%
+\parbox{\dimexpr 2\wd\ltx@rorschach@b+#1\relax}{%
 \usebox{\ltx@rorschach@b}\hspace*{#1}\reflectbox{\usebox{\ltx@rorschach@b}}}%
 }
 \endinput
