@@ -1,0 +1,68 @@
+\ProvidesPackage{latex-rorschach}[2021/03/31 v1.0 create random rorschach-like images. Ported from LILLY.]
+
+\RequirePackage{tikz}
+\usetikzlibrary{decorations.pathmorphing}
+
+\tikzset{
+    rorschach@path/.style={decoration={random steps, segment length=6pt},decorate,rounded corners=3pt}
+}
+
+\def\Rorschach@NextRandCoords#1#2{
+  \pgfmathsetmacro\TargetRandAng{50*rand+#2}
+  \pgfmathsetmacro\TargetRandX{#1*cos(\TargetRandAng)}
+  \pgfmathsetmacro\TargetRandY{#1*sin(\TargetRandAng)}
+  \global\let\CurTarX\TargetRandX \global\let\CurTarY\TargetRandY \global\let\CurTarAng\TargetRandAng
+}
+
+% x | y | angle | steps | WalkerCs | prefix
+\def\Rorschach@Walk#1#2#3#4#5#6{
+  \gdef\CurX{#1} \gdef\CurY{#2} \gdef\CurAng{#3}
+  \foreach \step in {1,...,#4} {
+    \pgfmathsetmacro\Tarlength{2.5-1*\step/#4}
+    \csname #5\endcsname{\Tarlength}{\CurAng}% calc next
+    \pgfmathsetmacro\ColGrading{100-75*\step/#4}
+    \fill[\randcol!\ColGrading,rorschach@path] (\CurX,\CurY) -- ++(\CurTarX,\CurTarY);
+    \pgfmathsetmacro\NewCurX{\CurX+\CurTarX}\pgfmathsetmacro\NewCurY{\CurY+\CurTarY}
+    \coordinate (#6\step) at(\NewCurX,\NewCurY);
+    \global\let\CurX\NewCurX \global\let\CurY\NewCurY \global\let\CurAng\CurTarAng
+  }
+}
+
+
+% This command generates the Path for the fill algorithm, sad guy
+% Prefix | Maximum
+\def\Rorschach@Fillcreation#1#2{%
+  (#11)%
+  \foreach \i in {2,...,#2}{%
+    -- (#1\i)
+  } -- (#11)
+}
+
+\newcommand*\GenerateRorschachRandom[1][\z@]{%
+\GenerateRorschachSpecific[#1]{\number\pdfrandomseed}%
+}
+
+\newsavebox\ltx@rorschach@b
+
+% shift between boxes | seed
+\newcommand*\GenerateRorschachSpecific[2][\z@]{%
+\pgfmathsetseed{#2}%
+\GenerateRorschach[#1]%
+}
+
+\newcommand*\GenerateRorschach[1][\z@]{%
+\savebox\ltx@rorschach@b{%
+\begin{tikzpicture}
+  \def\max{e} \def\stepmax{15}
+  \foreach \a[count=\i] in {a,...,\max}{
+    \def\randcol{green}% TODO: randcol
+    \pgfmathsetmacro\@StartX{15*rand}
+    \pgfmathsetmacro\@StartY{6*rand}
+    \edef\@tmp{\noexpand\Rorschach@Walk{\@StartX}{\@StartY}{10\i}{\stepmax}{Rorschach@NextRandCoords}{\a}}\@tmp;
+    \edef\@tmp{\noexpand\fill[black,rorschach@path] \noexpand\Rorschach@Fillcreation{\a}{\stepmax}}\@tmp;
+  }
+\end{tikzpicture}}%
+\parbox{2\wd\ltx@rorschach@b}{%
+\usebox{\ltx@rorschach@b}\hspace*{#1}\reflectbox{\usebox{\ltx@rorschach@b}}}%
+}
+\endinput
