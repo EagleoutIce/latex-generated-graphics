@@ -50,6 +50,12 @@
 \GenerateRorschach[#1]%
 }
 
+\newcommand*\SetRorschachColors[1]{%
+    \pgfmathdeclarerandomlist{rorschach@color}{#1}%
+}
+
+\SetRorschachColors{{red}{green}{blue}{teal}{orange}{yellow}{magenta}}
+
 \newcommand*\GenerateRorschach[1][\z@]{%
 \savebox\ltx@rorschach@b{%
 \begin{tikzpicture}
@@ -57,14 +63,13 @@
   \def\ltx@rorschach@stepmax{25}
   \foreach \ltx@rorschach@a[count=\i] in %
         {1,...,\ltx@rorschach@max}{
-    \def\randcol{green}% TODO: randcol
+    \pgfmathrandomitem\randcol{rorschach@color}
     \pgfmathsetmacro\@StartX{15*rand}
     \pgfmathsetmacro\@StartY{6*rand}
     \Rorschach@Walk{\@StartX}{\@StartY}{10\i}{\ltx@rorschach@stepmax}{Rorschach@NextRandCoords}{\ltx@rorschach@a};
     \fill[black,rorschach@path] \Rorschach@Fillcreation{\ltx@rorschach@a}{\ltx@rorschach@stepmax};
   }
 \end{tikzpicture}}%
-\parbox{\dimexpr 2\wd\ltx@rorschach@b+#1\relax}{%
-\usebox{\ltx@rorschach@b}\hspace*{#1}\reflectbox{\usebox{\ltx@rorschach@b}}}%
+\usebox{\ltx@rorschach@b}\hspace*{#1}\reflectbox{\usebox{\ltx@rorschach@b}}%
 }
 \endinput
