@@ -17,7 +17,7 @@
 
 \def\binet@@dl@#1{\binet@dl@root (binet-block-\binet@lines@start) #1 (binet-block-\binet@lines@end);}
 
-\def\binet@route@lines@pick@ab{\begingroup
+\def\binet@route@lines@pick@ab{%
 % pick first block
 \pgfmathrandominteger{\binet@lines@start}{1}{\c@binet@block@count}%
 % target: remove one and add mod total to avoid same
@@ -50,8 +50,7 @@
     \else
     \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {--(\x, \y)}--}%
     \fi
-\fi\fi
-\endgroup}
+\fi\fi}
 \def\binet@route@lines{
     \pgfmathrandominteger{\binet@lines@to@draw}{\binet@lines@min@count}{min(\binet@lines@max@count,\c@binet@block@count*2-1)}
     \binet@debug{Got '\number\c@binet@block@count' blocks connect up to '\binet@lines@to@draw' lines}
