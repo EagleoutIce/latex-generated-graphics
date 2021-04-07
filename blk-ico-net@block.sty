@@ -120,7 +120,7 @@
     \edef\@binet@y{\the\numexpr#1+#2+\@ne}% +1 as y not <=
     \@whilenum\value{binet@y}<\@binet@y\do{%
         \edef\@binet@tmp{\binet@m@max@of@y{\arabic{binet@y}}}%
-        \ifnum\@binet@tmp<\@ne % 0 or invalid
+        \ifnum\@binet@tmp<1 % 0 or invalid
             \@binet@flag@a@false
         \fi
         \stepcounter{binet@y}
@@ -170,9 +170,9 @@
 \def\binet@block@randxy@pickxw@topline{%
     \def\@binet@topline@x{}
     \ifnum\binet@m@max@of@y{\arabic{binet@y}}=0\else
-    \setcounter{binet@a}\z@% current
-    \setcounter{binet@x}\z@
-    \setcounter{binet@c}\z@% total
+    \c@binet@a\z@% current
+    \c@binet@x\z@
+    \c@binet@c\z@% total
     \def\@binet@curx{0}
     \binet@m@for@x{%
         \binet@if@m@cfree(binet@x,binet@y)%
@@ -180,11 +180,11 @@
             {\binet@get@topline@x@}%
     }\binet@get@topline@x@\fi
     % select random element and split '@'
-    \setcounter{binet@a}\z@% current
+    \c@binet@a\z@% current
     \def\binet@selected@x{}%
-    \pgfmathrandominteger{\binet@desired@idx}{0}{\value{binet@c}-1}
+    \pgfmathrandominteger{\binet@desired@idx}{0}{\c@binet@c-1}
     \def\do##1{%
-        \ifnum\value{binet@a}=\binet@desired@idx\relax
+        \ifnum\c@binet@a=\binet@desired@idx\relax
             \edef\binet@selected@x{##1}%
         \fi
         \stepcounter{binet@a}%
@@ -198,18 +198,18 @@
 }
 
 \def\binet@get@xrange@x@{%
-    \ifnum\value{binet@a}>\@binet@sub@xlen\relax
-        \edef\@binet@sub@xlen{\arabic{binet@a}}%
+    \ifnum\c@binet@a>\@binet@sub@xlen\relax
+        \edef\@binet@sub@xlen{\number\c@binet@a}%
         \edef\@binet@sub@xidx{\@binet@sub@lastidx}%
     \fi
-    \setcounter{binet@a}\z@
-    \edef\@binet@sub@lastidx{\arabic{binet@x}}%
+    \c@binet@a\z@
+    \edef\@binet@sub@lastidx{\number\c@binet@x}%
 }
 
 
 \def\binet@block@randxy@pickxw@xrange{%
-    \setcounter{binet@x}{\binet@cur@xidx}% current
-    \setcounter{binet@a}\z@
+    \c@binet@x\binet@cur@xidx% current
+    \c@binet@a\z@
     \def\@binet@sub@lastidx{0}%
     \def\@binet@sub@xidx{0}%
     \def\@binet@sub@xlen{-1}%
@@ -234,32 +234,32 @@
 % find largest rectangle on y
 % trying from block@min@width up to max@[y]@x
 \setblockrand{w}{\binet@block@min@width}{min(\binet@block@max@width,\binet@m@max@of@y{\get{y}})}%
-\setcounter{binet@b}{\binet@block@min@width}%
+\c@binet@b\binet@block@min@width
 \def\binet@effective@w{0}%
 \def\binet@effective@x{0}%
-\@whilenum\value{binet@b}<\numexpr\get{w}+1\relax\do{%
-    \setcounter{binet@y}{\get{y}}%
+\@whilenum\c@binet@b<\numexpr\get{w}+\@ne\relax\do{%
+    \c@binet@y\get{y}\relax
     % find start in topline => \binet@cur@xidx & \binet@cur@xlen
     \binet@block@randxy@pickxw@topline
-    \stepcounter{binet@y}%
+    \advance\c@binet@y\@ne
     \if@binet@flag@typeset@block@
-    \@whilenum\value{binet@y}<\numexpr\get{y}+\get{h}\relax\do{% TODO: maybe +1?
+    \@whilenum\c@binet@y<\numexpr\get{y}+\get{h}\relax\do{% TODO: maybe +1?
         % search for the largest x-slot in 'xidx..xidx+xlen'
         % if found, it will narrow it down
         \binet@block@randxy@pickxw@xrange
-        \stepcounter{binet@y}%
+        \advance\c@binet@y\@ne
     }%
     \binet@debug{In run for \arabic{binet@b}: [\binet@cur@xidx..+\binet@cur@xlen]}%
     \ifnum\binet@cur@xlen<\binet@effective@w\else
-        \ifnum\arabic{binet@b}<\binet@cur@xlen
+        \ifnum\c@binet@b<\binet@cur@xlen
         \ifnum\binet@cur@xidx<\z@\else
         \edef\binet@effective@w{\binet@cur@xlen}%
         \edef\binet@effective@x{\binet@cur@xidx}%
-        \edef\binet@effective@b{\arabic{binet@b}}%
+        \edef\binet@effective@b{\number\c@binet@b}%
         \binet@debug{  Updated: [\binet@effective@x..+\binet@effective@w]}%
     \fi\fi\fi
     \fi
-    \stepcounter{binet@b}%
+    \advance\c@binet@b\@ne
 }%
 \if@binet@flag@typeset@block@
     \ifnum\binet@effective@w<\binet@block@min@width\relax
@@ -282,31 +282,31 @@
 
 \def\binet@single@block@specialblock#1#2{
   % block y
-  \setcounter{binet@y}\z@
-  \@whilenum\value{binet@y}<\binet@getblock@{#1}{h}\do{%
-    \setcounter{binet@x}\z@
-    \@whilenum\value{binet@x}<\binet@getblock@{#1}{w}\do{%
+  \c@binet@y\z@
+  \@whilenum\c@binet@y<\binet@getblock@{#1}{h}\do{%
+    \c@binet@x\z@
+    \@whilenum\c@binet@x<\binet@getblock@{#1}{w}\do{%
         \csname binet@m@#2\endcsname(%
-            \the\numexpr\arabic{binet@x}+\binet@getblock@{#1}{x}\relax,%
-            \the\numexpr\arabic{binet@y}+\binet@getblock@{#1}{y}\relax)%
-        \stepcounter{binet@x}% Block!
+            \the\numexpr\number\c@binet@x+\binet@getblock@{#1}{x},%
+            \the\numexpr\number\c@binet@y+\binet@getblock@{#1}{y})%
+        \advance\c@binet@x\@ne% Block!
     }
-    \stepcounter{binet@y}%
+    \advance\c@binet@y\@ne
   }
 }
 
 \def\binet@single@block@block{
   % block y
-  \setcounter{binet@y}\z@
-  \@whilenum\value{binet@y}<\get{h}\do{%
-    \setcounter{binet@x}\z@
-    \@whilenum\value{binet@x}<\get{w}\do{%
+  \c@binet@y\z@\relax
+  \@whilenum\c@binet@y<\get{h}\do{%
+    \c@binet@x\z@\relax
+    \@whilenum\c@binet@x<\get{w}\do{%
         \binet@m@block(%
-            \the\numexpr\arabic{binet@x}+\get{x}\relax,%
-            \the\numexpr\arabic{binet@y}+\get{y}\relax)%
-        \stepcounter{binet@x}% Block!
+            \the\numexpr\number\c@binet@x+\get{x},%
+            \the\numexpr\number\c@binet@y+\get{y})
+        \advance\c@binet@x\@ne % Block!
     }
-    \stepcounter{binet@y}%
+    \advance\c@binet@y\@ne
   }
   \binet@update@present@squares
 }
@@ -314,7 +314,7 @@
 % 4)+
 \def\binet@draw@single@block{%
   \@binet@flag@typeset@block@true
-  \stepcounter{binet@block@count}
+  \advance\c@binet@block@count\@ne
   % \set and allocate dimens
   \binet@loadBlockColor
   \setblock{c}{\binet@blockcolor}
@@ -325,7 +325,7 @@
     \binet@single@block@block
   \else
     % free registers
-    \addtocounter{binet@block@count}{-1}
+    \advance\c@binet@block@count-\@ne
   \fi
 }
 \endinput

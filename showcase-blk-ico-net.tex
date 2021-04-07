@@ -3,11 +3,11 @@
 
 \usepackage{color-palettes}
 \UsePalette{GreenWater}
-\usepackage[cpalette,debug]{Blk-ico-net}% pathfade
+\usepackage[cpalette,debug]{blk-ico-net}% pathfade
 
 \begin{document}
 \begin{center}
-    \BlkIcoRandomNet[square=100,grid,max block count=100,max line count=150,frame,scale=3]
+    \BlkIcoRandomNet[square=100,grid,max block count=100,max line count=150,min line count=25,frame,scale=3]
 \end{center}
 
 \begin{center}
@@ -55,18 +55,18 @@
     \block[leveld1](0,25,6,-4)[11]
 
     \begin{rootlayer}
-        \path[draw,iinet@pathfade={level1}{level2}] (1) |- (4);
-        \path[draw,iinet@pathfade={level1}{level2}] (2) -- (4);
-        \path[draw,iinet@pathfade={level1}{level2}] (3) |- (4);
+        \draw[binet@pathfade={level1}{level2}] (1) |- (4);
+        \draw[binet@pathfade={level1}{level2}] (2) -- (4);
+        \draw[binet@pathfade={level1}{level2}] (3) |- (4);
 
-        \path[draw,iinet@pathfade={levelb1}{levelb2}] (5.north) -- ++(0,1.5) -| (7.240);
-        \path[draw,iinet@pathfade={levelb1}{levelb2}] (6.north) -- ++(0,1.5) -| (7.300);
+        \draw[binet@pathfade={levelb1}{levelb2}] (5.north) -- ++(0,1.5) -| (7.240);
+        \draw[binet@pathfade={levelb1}{levelb2}] (6.north) -- ++(0,1.5) -| (7.300);
 
-        \path[draw,iinet@pathfade={level2}{levelc2}] (4) |- (8);
-        \path[draw,iinet@pathfade={levelb2}{levelc2}] (7) -- (8);
-        \path[draw,iinet@pathfade={levelc2}{white}] (8) -- ++(0,16);
+        \draw[binet@pathfade={level2}{levelc2}] (4) |- (8);
+        \draw[binet@pathfade={levelb2}{levelc2}] (7) -- (8);
+        \draw[binet@pathfade={levelc2}{white}] (8) -- ++(0,16);
 
-        \path[draw,iinet@pathfade={leveld1}{leveld1}] (10.east) -- ++(1,0) |- (11.east);
+        \draw[binet@pathfade={leveld1}{leveld1}] (10.east) -- ++(1,0) |- (11.east);
     \end{rootlayer}
 }}
 \end{center}

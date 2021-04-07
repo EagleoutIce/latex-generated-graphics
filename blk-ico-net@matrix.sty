@@ -22,23 +22,23 @@
 \binet@update@present@squares
 }
 
-\def\binet@m@get(#1,#2){\@nameuse{binet@m@#2@#1}}% (x, y)
+\def\binet@m@get(#1,#2){\csname binet@m@#2@#1\endcsname}% (x, y)
 \def\binet@m@cget(#1,#2){\binet@m@get(\arabic{#1},\arabic{#2})}% (x, y) but with counters
 
 \long\def\binet@if@m@free(#1,#2)#3#4{\ifcsname binet@m@#2@#1\endcsname#3\else#4\fi}
 \def\binet@if@m@cfree(#1,#2){\binet@if@m@free(\arabic{#1},\arabic{#2})}
 
 \def\binet@m@block(#1,#2){%
-    \expandafter\expandafter\expandafter\expandafter\expandafter\expandafter\expandafter%
+    \expandafter\expandafter\expandafter%
     \undef\binet@m@get(#1,#2)}
 \def\binet@m@unblock(#1,#2){%
     \expandafter\def\csname binet@m@#2@#1\endcsname{}}
 \def\binet@m@cblock(#1,#2){\binet@m@block(\arabic{#1},\arabic{#2})}
 
 \long\def\binet@m@for@y#1{%
-\setcounter{binet@y}\z@
+\c@binet@y\z@
 \@whilenum\value{binet@y}<\binet@matrix@y\do{%
-    \setcounter{binet@x}\z@#1\advance\c@binet@y\@ne
+    \c@binet@x\z@#1\advance\c@binet@y\@ne
 }}
 
 \long\def\binet@m@for@x#1{%

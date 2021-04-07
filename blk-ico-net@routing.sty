@@ -27,12 +27,12 @@
     ([xshift=\@binet@jx pt,yshift=\@binet@jy pt]binet-block-\binet@lines@end);
 }
 
-\def\binet@route@lines@pick@ab{%
+\def\binet@route@lines@pick@ab{\begingroup
 % pick first block
-\pgfmathrandominteger{\binet@lines@start}{1}{\value{binet@block@count}}%
+\pgfmathrandominteger{\binet@lines@start}{1}{\c@binet@block@count}%
 % target: remove one and add mod total to avoid same
-\pgfmathsetmacro\binet@lines@end{int(mod(\binet@lines@start+random(1,\value{binet@block@count}-1),\value{binet@block@count}))}
-\ifnum\binet@lines@end=0\relax
+\pgfmathsetmacro\binet@lines@end{int(mod(\binet@lines@start+random(1,\c@binet@block@count-1),\c@binet@block@count))}
+\ifnum\binet@lines@end=0
     \ifnum\binet@lines@start=1 \def\binet@lines@end{2}\else
     \def\binet@lines@end{1}\fi
 \fi
@@ -58,16 +58,16 @@
         \fi
     \fi
     \else
-    \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {-- (\x, \y)} --}%
+    \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {--(\x, \y)}--}%
     \fi
 \fi\fi
-}
+\endgroup}
 \def\binet@route@lines{
     \pgfmathrandominteger{\binet@lines@to@draw}{\binet@lines@min@count}{min(\binet@lines@max@count,\c@binet@block@count*2-1)}
     \binet@debug{Got '\arabic{binet@block@count}' blocks connect up to '\binet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
-    \setcounter{binet@c}\z@
-    \@whilenum\value{binet@c}<\binet@lines@to@draw\do{
+    \c@binet@c\z@
+    \@whilenum\c@binet@c<\binet@lines@to@draw\do{
         \binet@route@lines@pick@ab
         \advance\c@binet@c\@ne
     }
@@ -81,7 +81,7 @@
 \CreateQueue{binet@bfs@routing@end}
 \CreateQueue{binet@bfs@routing@result}
 
-\def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-1\relax,\the\numexpr#2-\@ne){#4}{#3}}
+\def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-\@ne,\the\numexpr#2-\@ne){#4}{#3}}
 % queue :#2 => block #1
 \def\binet@route@lines@setblock@center#1#2{%
 \expandafter\pgfmathsetmacro\csname #2@x\endcsname{int(\binet@getblock@{#1}{x}+\binet@getblock@{#1}{w}/2)}
@@ -98,8 +98,9 @@
 % clear the result queue
 \ResetQueue{binet@bfs@routing@result}%
 % TODO: same for end block with endl
-\GetShortestPath(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\binet@width x\binet@height]{binet@CheckBlock}{binet@bfs@routing@result}
-\binet@debug{Result: \GetQueue{binet@bfs@routing@result}}
+\edef\@tmp{(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\binet@width x\binet@height]{binet@CheckBlock}{binet@bfs@routing@result}}
+\expandafter\GetShortestPath\@tmp
+\binet@debug{Result: (\GetQueue{binet@bfs@routing@result})}
 \edef\binet@bfs@routing@result{\GetQueue{binet@bfs@routing@result}}
 % reinsert the selected blocks in the block mask
 \binet@single@block@specialblock{#1}{block}%
