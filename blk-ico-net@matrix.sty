@@ -32,14 +32,13 @@
 \def\binet@m@unblock(#1,#2){\expandafter\let\csname binet@m@#2@#1\endcsname\@empty}
 \def\binet@m@cblock(#1,#2){\binet@m@block(\number\csname c@#1\endcsname,\number\csname c@#2\endcsname)}
 
-\long\def\binet@m@for@y#1{%
-\c@binet@y\z@
+\long\def\binet@m@for@y#1{\c@binet@y\z@\relax
 \@whilenum\c@binet@y<\binet@matrix@y\do{%
-    \c@binet@x\z@#1\advance\c@binet@y\@ne
+    \c@binet@x\z@\relax#1\advance\c@binet@y\@ne\relax
 }}
 
 \long\def\binet@m@for@x#1{%
 \@whilenum\c@binet@x<\binet@matrix@x\do{% for each x
-    #1\advance\c@binet@x\@ne
+    #1\advance\c@binet@x\@ne\relax
 }}
 \endinput
