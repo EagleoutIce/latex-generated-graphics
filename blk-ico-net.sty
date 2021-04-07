@@ -31,7 +31,7 @@
 }
 
 \newif\if@binet@deadcycles@reached@
-\newcommand*\blkIcoRandomNet[1][]{\blkIcoNet[#1]{
+\newcommand*\BlkIcoRandomNet[1][]{\BlkIcoNet[#1]{
     \setcounter{binet@block@a}\z@
     \@whilenum\value{binet@block@a}<\binet@block@max@count\do{%
         \binet@draw@single@block
@@ -57,7 +57,7 @@
 
 \newenvironment{blk@rootlayer}{\begin{pgfonlayer}{background}}{\end{pgfonlayer}}
 
-\newcommand\blkIcoNet[2][]{\begingroup
+\newcommand\BlkIcoNet[2][]{\begingroup
 \binet@init{#1}%
 \begin{tikzpicture}[x=1pt,y=1pt,scale=\binet@scale]
     \let\get\binet@getblock
