@@ -30,12 +30,12 @@
 
 % location (lower-left) | color | width | height | special name
 \def\binet@draw@single@@block#1#2#3#4#5{% TODO: union node with current path
-    \path[binet@block=#2] (#1)++(\binet@inset@x,\binet@inset@y) rectangle ++(#3-\binet@inset@x,#4-\binet@inset@y) node[%
-        midway,outer sep=\z@,inner sep=\z@,
-        minimum width=#3-\binet@inset@x pt,
-        minimum height=#4-\binet@inset@y pt,% TODO: change shading
-        binet@node@block=#2%
-    ] (#5) {}  coordinate[midway,centered] (binet-block-\arabic{binet@block@count});
+\path[binet@block=#2] (#1)++(\binet@inset@x,\binet@inset@y) rectangle ++(#3-\binet@inset@x,#4-\binet@inset@y) node[%
+    midway,outer sep=\z@,inner sep=\z@,
+    minimum width=#3-\binet@inset@x pt,
+    minimum height=#4-\binet@inset@y pt,% TODO: change shading
+    binet@node@block=#2%
+] (#5) {}  coordinate[midway,centered] (binet-block-\number\c@binet@block@count);
 }
 
 \def\binet@fronte@draw@block{\@ifnextchar[{\binet@@fronte@draw@block}{\binet@loadBlockColor
@@ -43,7 +43,7 @@
 \def\binet@@fronte@draw@block[#1](#2,#3,#4,#5){\@ifnextchar[{\binet@@@fronte@draw@block[#1](#2,#3,#4,#5)}{\binet@@@fronte@draw@block[#1](#2,#3,#4,#5)[]}}%
 \def\binet@@@fronte@draw@block[#1](#2,#3,#4,#5)[#6]{%
     % assure 1 counter
-    \stepcounter{binet@block@count}%
+    \advance\c@binet@block@count\@ne
     % compensate inset!
     \binet@draw@single@@block{{#2-\binet@inset@x},{#3-\binet@inset@y}}{#1}{#4+\binet@inset@x}{#5+\binet@inset@y}{#6}%
 }
@@ -57,7 +57,7 @@
 
 \def\binet@setblockrand#1#2#3{\pgfmathrandominteger{\@binet@tmp}{#2}{#3}\setblock{#1}{\@binet@tmp}}
 \def\binet@m@max@of@y#1{\ifcsname binet@max@#1@x\endcsname\@nameuse{binet@max@#1@x}\else-1\fi}
-\def\binet@get@consecutive@x@{\ifnum\value{binet@a}>\@binet@con@x\relax\edef\@binet@con@x{\number\c@binet@a}\fi\c@binet@a\z@}
+\def\binet@get@consecutive@x@{\ifnum\c@binet@a>\@binet@con@x\relax\edef\@binet@con@x{\number\c@binet@a}\fi\c@binet@a\z@}
 
 \def\binet@get@consecutive@x#1{%
 % do not run if already known 0
@@ -67,12 +67,12 @@
 \c@binet@x#1\relax% start x
 \binet@m@for@x{%
     \binet@if@m@cfree(binet@x,binet@y)%
-        {\stepcounter{binet@a}}% free
+        {\advance\c@binet@a\@ne}% free
         {\binet@get@consecutive@x@}%
 }\binet@get@consecutive@x@\fi
 }
 
-\def\binet@get@consecutive@y@{\ifnum\value{binet@a}>\@binet@con@y\relax\edef\@binet@con@y{\arabic{binet@a}}\fi\setcounter{binet@a}\z@}
+\def\binet@get@consecutive@y@{\ifnum\c@binet@a>\@binet@con@y\relax\edef\@binet@con@y{\number\c@binet@a}\fi\c@binet@a\z@}
 \def\binet@get@consecutive@y{%
 \c@binet@a\z@% current
 \c@binet@b\z@% total added
@@ -82,8 +82,8 @@
     \ifnum\binet@m@max@of@y{\number\c@binet@y}=0\relax
         \binet@get@consecutive@y@
     \else
-        \stepcounter{binet@a}\stepcounter{binet@b}%
-        \listeadd\binet@m@ylist{\arabic{binet@y}}%
+        \advance\c@binet@a\@ne\relax \advance\c@binet@b\@ne
+        \listeadd\binet@m@ylist{\number\c@binet@y}%
     \fi
 }\binet@get@consecutive@y@
 }
@@ -92,11 +92,11 @@
     % TODO: set error flag (if?) in case of insufficient dimensions
     \binet@m@for@y{%
         \binet@get@consecutive@x{0}
-        \expandafter\edef\csname binet@max@\arabic{binet@y}@x\endcsname{\@binet@con@x}%
+        \expandafter\edef\csname binet@max@\number\c@binet@y @x\endcsname{\@binet@con@x}%
     }
     \binet@get@consecutive@y
     \expandafter\edef\csname binet@max@y\endcsname{\@binet@con@y}%
-    \edef\binet@m@ylist@total{\arabic{binet@b}}%
+    \edef\binet@m@ylist@total{\number\c@binet@b}%
 }
 
 \def\binet@block@randxy@picky@first{%
@@ -115,11 +115,11 @@
 % start | height
 \def\binet@block@randxy@picky@testfit#1#2{%
     % \binet@m@max@of@y
-    \setcounter{binet@y}{#1}%
+    \c@binet@y#1\relax
     \@binet@flag@a@true
     \edef\@binet@y{\the\numexpr#1+#2+\@ne}% +1 as y not <=
     \@whilenum\c@binet@y<\@binet@y\do{%
-        \edef\@binet@tmp{\binet@m@max@of@y{\arabic{binet@y}}}%
+        \edef\@binet@tmp{\binet@m@max@of@y{\number\c@binet@y}}%
         \ifnum\@binet@tmp<1 % 0 or invalid
             \@binet@flag@a@false
         \fi
@@ -132,35 +132,35 @@
 % cycle up to: as the list is sorted ascending,
 % there have to be at least 'h' remaining
 \binet@block@randxy@picky@first
-\setcounter{binet@a}{\binet@selected@y}%
+\c@binet@a\binet@selected@y\relax
 \ifnum\binet@selected@y<0
     \PackageWarning{blk-ico-net}{first y pick selected '\binet@selected@y' which is registered as a warning. Block will be omitted}
     \@binet@flag@typeset@block@false
 \fi
-\binet@block@randxy@picky@testfit{\arabic{binet@a}}{\get{h}}
+\binet@block@randxy@picky@testfit{\number\c@binet@a}{\get{h}}
 \if@binet@flag@a@\else
     % if this is set binet@a does not suffice
     % so we cycle until it fits or binet@a=\binet@selected@y
     \binet@debug{Original y-selection (\binet@selected@y) failed, reshift}
     \c@binet@b\z@
-    \@whilenum\value{binet@b}<\binet@m@ylist@total\do{%
+    \@whilenum\c@binet@b<\binet@m@ylist@total\do{%
         \pgfmathparse{int(mod(\number\c@binet@a+1,\binet@m@ylist@total))}% mod shift 1
         \c@binet@a\pgfmathresult
-        \binet@block@randxy@picky@testfit{\arabic{binet@a}}{\get{h}}% free
+        \binet@block@randxy@picky@testfit{\number\c@binet@a}{\get{h}}% free
         \if@binet@flag@a@ % can be placed on this height
             \c@binet@b\binet@m@ylist@total\relax% 'break'
         \fi
         \advance\c@binet@b\@ne
     }
 \fi
-\setblock{y}{\arabic{binet@a}}%
+\setblock{y}{\number\c@binet@a}%
 }
 
 \def\binet@get@topline@x@{%
     \ifnum\c@binet@a<\c@binet@b\else
-        \listeadd\@binet@topline@x{\@binet@curx:\arabic{binet@a}}%
+        \listeadd\@binet@topline@x{\@binet@curx:\number\c@binet@a}%
         \advance\c@binet@c\@ne
-        \edef\@binet@curx{\arabic{binet@x}}
+        \edef\@binet@curx{\number\c@binet@x}
     \fi
     \c@binet@a\z@
 }
@@ -169,14 +169,14 @@
 
 \def\binet@block@randxy@pickxw@topline{%
     \def\@binet@topline@x{}
-    \ifnum\binet@m@max@of@y{\arabic{binet@y}}=0\else
+    \ifnum\binet@m@max@of@y{\number\c@binet@y}=\z@\else
     \c@binet@a\z@% current
     \c@binet@x\z@
     \c@binet@c\z@% total
     \def\@binet@curx{0}
     \binet@m@for@x{%
         \binet@if@m@cfree(binet@x,binet@y)%
-            {\stepcounter{binet@a}}% free
+            {\advance\c@binet@a\@ne}% free
             {\binet@get@topline@x@}%
     }\binet@get@topline@x@\fi
     % select random element and split '@'
@@ -215,7 +215,7 @@
     \def\@binet@sub@xlen{-1}%
     \@whilenum\c@binet@x<\numexpr\binet@cur@xidx+\binet@cur@xlen+\@ne\relax\do{%
         \binet@if@m@cfree(binet@x,binet@y)%
-            {\stepcounter{binet@a}}% free
+            {\advance\c@binet@a\@ne}% free
             {\binet@get@xrange@x@}%
         \advance\c@binet@x\@ne
     }\binet@get@xrange@x@
@@ -225,7 +225,7 @@
         \edef\binet@cur@xidx{\@binet@sub@xidx}%
     \fi
     \ifnum\numexpr\@binet@sub@xidx+\@binet@sub@xlen\relax<\numexpr\binet@cur@xidx+\binet@cur@xlen\relax% len
-        \pgfmathsetmacro\binet@cur@xlen{int(\@binet@sub@xidx+\@binet@sub@xlen-\binet@cur@xidx)}%
+        \edef\binet@cur@xlen{\the\numexpr\@binet@sub@xidx+\@binet@sub@xlen-\binet@cur@xidx}%
     \fi
 }
 
@@ -249,10 +249,9 @@
         \binet@block@randxy@pickxw@xrange
         \advance\c@binet@y\@ne
     }%
-    \binet@debug{In run for \arabic{binet@b}: [\binet@cur@xidx..+\binet@cur@xlen]}%
+    \binet@debug{In run for \number\c@binet@b: [\binet@cur@xidx..+\binet@cur@xlen]}%
     \ifnum\binet@cur@xlen<\binet@effective@w\else
-        \ifnum\c@binet@b<\binet@cur@xlen
-        \ifnum\binet@cur@xidx<\z@\else
+        \ifnum\c@binet@b<\binet@cur@xlen\ifnum\binet@cur@xidx<\z@\else
         \edef\binet@effective@w{\binet@cur@xlen}%
         \edef\binet@effective@x{\binet@cur@xidx}%
         \edef\binet@effective@b{\number\c@binet@b}%
@@ -297,9 +296,9 @@
 
 \def\binet@single@block@block{
   % block y
-  \c@binet@y\z@\relax
+  \c@binet@y\z@
   \@whilenum\c@binet@y<\get{h}\do{%
-    \c@binet@x\z@\relax
+    \c@binet@x\z@
     \@whilenum\c@binet@x<\get{w}\do{%
         \binet@m@block(%
             \the\numexpr\number\c@binet@x+\get{x},%

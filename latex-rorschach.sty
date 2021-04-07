@@ -20,7 +20,7 @@
   \foreach \step in {1,...,#4} {
     \pgfmathsetmacro\Tarlength{2.5-1*\step/#4}
     \csname #5\endcsname{\Tarlength}{\CurAng}% calc next
-    \fill[\randcol,rorschach@path] (\CurX,\CurY) -- ++(\CurTarX,\CurTarY);
+    \path[fill,\randcol,rorschach@path] (\CurX,\CurY) -- ++(\CurTarX,\CurTarY);
     \pgfmathsetmacro\NewCurX{\CurX+\CurTarX}
     \pgfmathsetmacro\NewCurY{\CurY+\CurTarY}
     \coordinate (#6\step) at(\NewCurX,\NewCurY);
@@ -67,7 +67,7 @@
     \pgfmathsetmacro\@StartX{15*rand}
     \pgfmathsetmacro\@StartY{6*rand}
     \Rorschach@Walk{\@StartX}{\@StartY}{10\i}{\ltx@rorschach@stepmax}{Rorschach@NextRandCoords}{\ltx@rorschach@a};
-    \fill[black,rorschach@path] \Rorschach@Fillcreation{\ltx@rorschach@a}{\ltx@rorschach@stepmax};
+    \path[fill,black,rorschach@path] \Rorschach@Fillcreation{\ltx@rorschach@a}{\ltx@rorschach@stepmax};
   }
 \end{tikzpicture}}%
 \usebox{\ltx@rorschach@b}\hspace*{#1}\reflectbox{\usebox{\ltx@rorschach@b}}%

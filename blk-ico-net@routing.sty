@@ -9,23 +9,13 @@
   \pgfextracty#3{\pgfpointanchor{#1}{center}}%
 }
 
-\def\binet@@dl@raw{
-\pgfmathsetmacro\@binet@jx{int(rand*\binet@jitter@steps)/\binet@jitter@steps*\binet@jitter@x}%
-\pgfmathsetmacro\@binet@jy{int(rand*\binet@jitter@steps)/\binet@jitter@steps*\binet@jitter@y}%
-}
-
 \ifbinet@setup@pathfade@
 \newcommand*\binet@dl@root[1][]{\path[binet@pathfade={\binet@getblock@{\binet@lines@start}{c}}{\binet@getblock@{\binet@lines@end}{c}},#1]}%
 \else
 \newcommand*\binet@dl@root[1][]{\path[binet@line=\binet@getblock@{\binet@lines@start}{c},#1]}%
 \fi
 
-\def\binet@@dl@#1{%
-\binet@@dl@raw
-\binet@dl@root
-    (binet-block-\binet@lines@start)++(\@binet@jx,\@binet@jy) #1
-    ([xshift=\@binet@jx pt,yshift=\@binet@jy pt]binet-block-\binet@lines@end);
-}
+\def\binet@@dl@#1{\binet@dl@root (binet-block-\binet@lines@start) #1 (binet-block-\binet@lines@end);}
 
 \def\binet@route@lines@pick@ab{\begingroup
 % pick first block
@@ -64,7 +54,7 @@
 \endgroup}
 \def\binet@route@lines{
     \pgfmathrandominteger{\binet@lines@to@draw}{\binet@lines@min@count}{min(\binet@lines@max@count,\c@binet@block@count*2-1)}
-    \binet@debug{Got '\arabic{binet@block@count}' blocks connect up to '\binet@lines@to@draw' lines}
+    \binet@debug{Got '\number\c@binet@block@count' blocks connect up to '\binet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
     \c@binet@c\z@
     \@whilenum\c@binet@c<\binet@lines@to@draw\do{
@@ -98,8 +88,8 @@
 % clear the result queue
 \ResetQueue{binet@bfs@routing@result}%
 % TODO: same for end block with endl
-\edef\@tmp{(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\binet@width x\binet@height]{binet@CheckBlock}{binet@bfs@routing@result}}
-\expandafter\GetShortestPath\@tmp
+\edef\@tmp{(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\binet@width x\binet@height]}
+\expandafter\GetShortestPath\@tmp{binet@CheckBlock}{binet@bfs@routing@result}
 \binet@debug{Result: (\GetQueue{binet@bfs@routing@result})}
 \edef\binet@bfs@routing@result{\GetQueue{binet@bfs@routing@result}}
 % reinsert the selected blocks in the block mask

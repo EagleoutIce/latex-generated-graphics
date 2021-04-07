@@ -27,30 +27,30 @@
 
 \def\binet@init#1{%
     \pgfkeys{/binet@keys,defaults,#1}%
-    \setcounter{binet@block@count}\z@
+    \c@binet@block@count\z@
 }
 
 \newif\if@binet@deadcycles@reached@
 \newcommand*\BlkIcoRandomNet[1][]{\BlkIcoNet[#1]{
-    \setcounter{binet@block@a}\z@
-    \@whilenum\value{binet@block@a}<\binet@block@max@count\do{%
+    \c@binet@block@a\z@
+    \@whilenum\c@binet@block@a<\binet@block@max@count\do{%
         \binet@draw@single@block
         \advance\c@binet@block@a\@ne
     }
     \@binet@deadcycles@reached@false
     % now ensure minimum is met
-    \setcounter{binet@block@a}\z@
-    \@whilenum\value{binet@block@count}<\binet@block@min@count\do{%
+    \c@binet@block@a\z@
+    \@whilenum\c@binet@block@count<\binet@block@min@count\do{%
         \binet@draw@single@block
         \advance\c@binet@block@a\@ne
-        \ifnum\value{binet@block@a}>\binet@block@deadcycles@count\relax
+        \ifnum\c@binet@block@a>\binet@block@deadcycles@count\relax
             \PackageWarning{blk-ico-net}{Deadcycles reached.}
-            \edef\binet@tmpbc{\arabic{binet@block@count}}%
-            \setcounter{binet@block@count}{\binet@block@min@count}%
+            \edef\binet@tmpbc{\number\c@binet@block@count}%
+            \c@binet@block@count\binet@block@min@count\relax
             \@binet@deadcycles@reached@true
         \fi
     }
-    \if@binet@deadcycles@reached@\setcounter{binet@block@count}{\binet@tmpbc}\fi
+    \if@binet@deadcycles@reached@\c@binet@block@count\binet@tmpbc\fi
     \binet@debug@show@matrix% Debug :)
     \binet@route@lines
 }}
@@ -72,12 +72,9 @@
         \path[clip,binet@outer@roundings] \binet@outer@path;
         \path[draw,binet@grid] (-\binet@padding@x,-\binet@padding@y) grid (\binet@width+\binet@padding@x,\binet@height+\binet@padding@y);
     \end{pgfonlayer}\fi
-    \let\debugmatrix\binet@debug@show@matrix
-    \let\autoroot\binet@route@lines
-    \let\block\binet@fronte@draw@block
-    \let\root\binet@dl@root
-    \let\rootlayer\blk@rootlayer
-    \let\endrootlayer\endblk@rootlayer
+    \let\debugmatrix\binet@debug@show@matrix \let\autoroot\binet@route@lines
+    \let\block\binet@fronte@draw@block \let\root\binet@dl@root
+    \let\rootlayer\blk@rootlayer \let\endrootlayer\endblk@rootlayer
     #2
 \end{tikzpicture}%
 \endgroup}

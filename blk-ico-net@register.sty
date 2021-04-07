@@ -47,9 +47,6 @@
 % TODO: i use inset as buffer for not working checks
 \binet@newreg inset@x=2;
 \binet@newreg inset@y=2;
-\binet@newreg jitter@x=0;
-\binet@newreg jitter@y=0;
-\binet@newreg jitter@steps=3;
 \binet@newreg width=25;
 \binet@newreg height=25;
 \binet@newreg block@min@width=8;
@@ -99,10 +96,6 @@ padding y/.store in=\binet@padding@y,
 inset/.code={\def\binet@inset@x{#1}\def\binet@inset@y{#1}},
 inset x/.store in=\binet@inset@x,
 inset y/.store in=\binet@inset@y,
-jitter/.code={\def\binet@jitter@x{#1}\def\binet@jitter@y{#1}},
-jitter x/.store in=\binet@jitter@x,
-jitter y/.store in=\binet@jitter@y,
-jitter steps/.store in=\binet@jitter@steps,
 min block width/.store in=\binet@block@min@width,
 max block width/.store in=\binet@block@max@width,
 min block height/.store in=\binet@block@min@height,
@@ -120,8 +113,6 @@ defaults/.style={%
     width=\binet@default@width, height=\binet@default@height,
     padding x=\binet@default@padding@x, padding y=\binet@default@padding@y,
     inset x=\binet@default@inset@x, inset y=\binet@default@inset@y,
-    jitter x=\binet@default@jitter@x, jitter y=\binet@default@jitter@y,
-    jitter steps=\binet@default@jitter@steps,
     min block width=\binet@default@block@min@width,
     max block width=\binet@default@block@max@width,
     min block height=\binet@default@block@min@height,
