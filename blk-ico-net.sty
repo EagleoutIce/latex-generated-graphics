@@ -59,7 +59,7 @@
 
 \newcommand\BlkIcoNet[2][]{\begingroup
 \binet@init{#1}%
-\begin{tikzpicture}[x=1pt,y=1pt,scale=\binet@scale]
+\begin{tikzpicture}[x=\p@,y=\p@,scale=\binet@scale]
     \let\get\binet@getblock
     \let\setblock\binet@setblock
     \let\setblockrand\binet@setblockrand
@@ -70,7 +70,7 @@
     \path[clip,binet@outer@roundings] \binet@outer@path;
     \if@binet@drawgrid\begin{pgfonlayer}{background}
         \path[clip,binet@outer@roundings] \binet@outer@path;
-        \draw[binet@grid] (-\binet@padding@x,-\binet@padding@y) grid (\binet@width+\binet@padding@x,\binet@height+\binet@padding@y);
+        \path[draw,binet@grid] (-\binet@padding@x,-\binet@padding@y) grid (\binet@width+\binet@padding@x,\binet@height+\binet@padding@y);
     \end{pgfonlayer}\fi
     \let\debugmatrix\binet@debug@show@matrix
     \let\autoroot\binet@route@lines

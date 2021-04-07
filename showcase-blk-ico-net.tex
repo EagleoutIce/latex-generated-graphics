@@ -55,18 +55,18 @@
     \block[leveld1](0,25,6,-4)[11]
 
     \begin{rootlayer}
-        \draw[iinet@pathfade={level1}{level2}] (1) |- (4);
-        \draw[iinet@pathfade={level1}{level2}] (2) -- (4);
-        \draw[iinet@pathfade={level1}{level2}] (3) |- (4);
+        \path[draw,iinet@pathfade={level1}{level2}] (1) |- (4);
+        \path[draw,iinet@pathfade={level1}{level2}] (2) -- (4);
+        \path[draw,iinet@pathfade={level1}{level2}] (3) |- (4);
 
-        \draw[iinet@pathfade={levelb1}{levelb2}] (5.north) -- ++(0,1.5) -| (7.240);
-        \draw[iinet@pathfade={levelb1}{levelb2}] (6.north) -- ++(0,1.5) -| (7.300);
+        \path[draw,iinet@pathfade={levelb1}{levelb2}] (5.north) -- ++(0,1.5) -| (7.240);
+        \path[draw,iinet@pathfade={levelb1}{levelb2}] (6.north) -- ++(0,1.5) -| (7.300);
 
-        \draw[iinet@pathfade={level2}{levelc2}] (4) |- (8);
-        \draw[iinet@pathfade={levelb2}{levelc2}] (7) -- (8);
-        \draw[iinet@pathfade={levelc2}{white}] (8) -- ++(0,16);
+        \path[draw,iinet@pathfade={level2}{levelc2}] (4) |- (8);
+        \path[draw,iinet@pathfade={levelb2}{levelc2}] (7) -- (8);
+        \path[draw,iinet@pathfade={levelc2}{white}] (8) -- ++(0,16);
 
-        \draw[iinet@pathfade={leveld1}{leveld1}] (10.east) -- ++(1,0) |- (11.east);
+        \path[draw,iinet@pathfade={leveld1}{leveld1}] (10.east) -- ++(1,0) |- (11.east);
     \end{rootlayer}
 }}
 \end{center}
