@@ -1,0 +1,6 @@
+target: latex-generated-graphics
+dependencies:
+    latex-algorithm-bfs:
+      url: https://github.com/EagleoutIce/latex-algorithm-bfs
+      driver: git
+      grab-files: ["*.sty"]
