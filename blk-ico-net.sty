@@ -27,19 +27,19 @@
 
 \def\binet@init#1{%
     \pgfkeys{/binet@keys,defaults,#1}%
-    \setcounter{binet@block@count}{0}%
+    \setcounter{binet@block@count}\z@
 }
 
 \newif\if@binet@deadcycles@reached@
 \newcommand*\blkIcoRandomNet[1][]{\blkIcoNet[#1]{
-    \setcounter{binet@block@a}{0}
+    \setcounter{binet@block@a}\z@
     \@whilenum\value{binet@block@a}<\binet@block@max@count\do{%
         \binet@draw@single@block
         \advance\c@binet@block@a\@ne
     }
     \@binet@deadcycles@reached@false
     % now ensure minimum is met
-    \setcounter{binet@block@a}{0}
+    \setcounter{binet@block@a}\z@
     \@whilenum\value{binet@block@count}<\binet@block@min@count\do{%
         \binet@draw@single@block
         \advance\c@binet@block@a\@ne

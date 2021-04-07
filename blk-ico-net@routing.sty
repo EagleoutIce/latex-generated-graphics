@@ -66,7 +66,7 @@
     \pgfmathrandominteger{\binet@lines@to@draw}{\binet@lines@min@count}{min(\binet@lines@max@count,\c@binet@block@count*2-1)}
     \binet@debug{Got '\arabic{binet@block@count}' blocks connect up to '\binet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
-    \setcounter{binet@c}{0}
+    \setcounter{binet@c}\z@
     \@whilenum\value{binet@c}<\binet@lines@to@draw\do{
         \binet@route@lines@pick@ab
         \advance\c@binet@c\@ne
@@ -81,7 +81,7 @@
 \CreateQueue{binet@bfs@routing@end}
 \CreateQueue{binet@bfs@routing@result}
 
-\def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-1\relax,\the\numexpr#2-1\relax){#4}{#3}}
+\def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-1\relax,\the\numexpr#2-\@ne){#4}{#3}}
 % queue :#2 => block #1
 \def\binet@route@lines@setblock@center#1#2{%
 \expandafter\pgfmathsetmacro\csname #2@x\endcsname{int(\binet@getblock@{#1}{x}+\binet@getblock@{#1}{w}/2)}

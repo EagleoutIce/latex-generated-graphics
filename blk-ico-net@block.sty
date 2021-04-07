@@ -57,12 +57,12 @@
 
 \def\binet@setblockrand#1#2#3{\pgfmathrandominteger{\@binet@tmp}{#2}{#3}\setblock{#1}{\@binet@tmp}}
 \def\binet@m@max@of@y#1{\ifcsname binet@max@#1@x\endcsname\@nameuse{binet@max@#1@x}\else-1\fi}
-\def\binet@get@consecutive@x@{\ifnum\value{binet@a}>\@binet@con@x\relax\edef\@binet@con@x{\arabic{binet@a}}\fi\setcounter{binet@a}{0}}
+\def\binet@get@consecutive@x@{\ifnum\value{binet@a}>\@binet@con@x\relax\edef\@binet@con@x{\arabic{binet@a}}\fi\setcounter{binet@a}\z@}
 
 \def\binet@get@consecutive@x#1{%
 % do not run if already known 0
 \ifnum\binet@m@max@of@y{\arabic{binet@y}}=0\relax\else
-\setcounter{binet@a}{0}% current
+\setcounter{binet@a}\z@% current
 \def\@binet@con@x{0}% maximum
 \setcounter{binet@x}{#1}% start x
 \binet@m@for@x{%
@@ -72,10 +72,10 @@
 }\binet@get@consecutive@x@\fi
 }
 
-\def\binet@get@consecutive@y@{\ifnum\value{binet@a}>\@binet@con@y\relax\edef\@binet@con@y{\arabic{binet@a}}\fi\setcounter{binet@a}{0}}
+\def\binet@get@consecutive@y@{\ifnum\value{binet@a}>\@binet@con@y\relax\edef\@binet@con@y{\arabic{binet@a}}\fi\setcounter{binet@a}\z@}
 \def\binet@get@consecutive@y{%
-\setcounter{binet@a}{0}% current
-\setcounter{binet@b}{0}% total added
+\setcounter{binet@a}\z@% current
+\setcounter{binet@b}\z@% total added
 \def\@binet@con@y{0}% maximum
 \def\binet@m@ylist{}%
 \binet@m@for@y{%
@@ -101,7 +101,7 @@
 
 \def\binet@block@randxy@picky@first{%
     \pgfmathrandominteger{\binet@rand@y}{0}{\binet@m@ylist@total-\get{h}-1}
-    \setcounter{binet@a}{0}% current
+    \setcounter{binet@a}\z@% current
     \def\binet@selected@y{-1}%
     \def\do##1{%
         \ifnum\value{binet@a}=\binet@rand@y\relax
@@ -117,10 +117,10 @@
     % \binet@m@max@of@y
     \setcounter{binet@y}{#1}%
     \@binet@flag@a@true
-    \edef\@binet@y{\the\numexpr#1+#2+1\relax}% +1 as y not <=
+    \edef\@binet@y{\the\numexpr#1+#2+\@ne}% +1 as y not <=
     \@whilenum\value{binet@y}<\@binet@y\do{%
         \edef\@binet@tmp{\binet@m@max@of@y{\arabic{binet@y}}}%
-        \ifnum\@binet@tmp<1\relax % 0 or invalid
+        \ifnum\@binet@tmp<\@ne % 0 or invalid
             \@binet@flag@a@false
         \fi
         \stepcounter{binet@y}
@@ -142,7 +142,7 @@
     % if this is set binet@a does not suffice
     % so we cycle until it fits or binet@a=\binet@selected@y
     \binet@debug{Original y-selection (\binet@selected@y) failed, reshift}
-    \setcounter{binet@b}{0}
+    \setcounter{binet@b}\z@
     \@whilenum\value{binet@b}<\binet@m@ylist@total\do{%
         \pgfmathparse{int(mod(\arabic{binet@a}+1,\binet@m@ylist@total))}% mod shift 1
         \setcounter{binet@a}{\pgfmathresult}
@@ -162,7 +162,7 @@
         \stepcounter{binet@c}%
         \edef\@binet@curx{\arabic{binet@x}}
     \fi
-    \setcounter{binet@a}{0}%#
+    \setcounter{binet@a}\z@
 }
 
 \def\binet@split@listelem#1:#2;{\edef\binet@cur@xidx{#1}\edef\binet@cur@xlen{#2}}
@@ -170,9 +170,9 @@
 \def\binet@block@randxy@pickxw@topline{%
     \def\@binet@topline@x{}
     \ifnum\binet@m@max@of@y{\arabic{binet@y}}=0\else
-    \setcounter{binet@a}{0}% current
-    \setcounter{binet@x}{0}%
-    \setcounter{binet@c}{0}% total
+    \setcounter{binet@a}\z@% current
+    \setcounter{binet@x}\z@
+    \setcounter{binet@c}\z@% total
     \def\@binet@curx{0}
     \binet@m@for@x{%
         \binet@if@m@cfree(binet@x,binet@y)%
@@ -180,7 +180,7 @@
             {\binet@get@topline@x@}%
     }\binet@get@topline@x@\fi
     % select random element and split '@'
-    \setcounter{binet@a}{0}% current
+    \setcounter{binet@a}\z@% current
     \def\binet@selected@x{}%
     \pgfmathrandominteger{\binet@desired@idx}{0}{\value{binet@c}-1}
     \def\do##1{%
@@ -202,14 +202,14 @@
         \edef\@binet@sub@xlen{\arabic{binet@a}}%
         \edef\@binet@sub@xidx{\@binet@sub@lastidx}%
     \fi
-    \setcounter{binet@a}{0}%
+    \setcounter{binet@a}\z@
     \edef\@binet@sub@lastidx{\arabic{binet@x}}%
 }
 
 
 \def\binet@block@randxy@pickxw@xrange{%
     \setcounter{binet@x}{\binet@cur@xidx}% current
-    \setcounter{binet@a}{0}%
+    \setcounter{binet@a}\z@
     \def\@binet@sub@lastidx{0}%
     \def\@binet@sub@xidx{0}%
     \def\@binet@sub@xlen{-1}%
@@ -252,7 +252,7 @@
     \binet@debug{In run for \arabic{binet@b}: [\binet@cur@xidx..+\binet@cur@xlen]}%
     \ifnum\binet@cur@xlen<\binet@effective@w\else
         \ifnum\arabic{binet@b}<\binet@cur@xlen
-        \ifnum\binet@cur@xidx<0\else
+        \ifnum\binet@cur@xidx<\z@\else
         \edef\binet@effective@w{\binet@cur@xlen}%
         \edef\binet@effective@x{\binet@cur@xidx}%
         \edef\binet@effective@b{\arabic{binet@b}}%
@@ -282,9 +282,9 @@
 
 \def\binet@single@block@specialblock#1#2{
   % block y
-  \setcounter{binet@y}{0}
+  \setcounter{binet@y}\z@
   \@whilenum\value{binet@y}<\binet@getblock@{#1}{h}\do{%
-    \setcounter{binet@x}{0}%
+    \setcounter{binet@x}\z@
     \@whilenum\value{binet@x}<\binet@getblock@{#1}{w}\do{%
         \csname binet@m@#2\endcsname(%
             \the\numexpr\arabic{binet@x}+\binet@getblock@{#1}{x}\relax,%
@@ -297,9 +297,9 @@
 
 \def\binet@single@block@block{
   % block y
-  \setcounter{binet@y}{0}
+  \setcounter{binet@y}\z@
   \@whilenum\value{binet@y}<\get{h}\do{%
-    \setcounter{binet@x}{0}%
+    \setcounter{binet@x}\z@
     \@whilenum\value{binet@x}<\get{w}\do{%
         \binet@m@block(%
             \the\numexpr\arabic{binet@x}+\get{x}\relax,%

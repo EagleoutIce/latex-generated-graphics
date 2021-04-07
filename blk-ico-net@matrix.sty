@@ -36,9 +36,9 @@
 \def\binet@m@cblock(#1,#2){\binet@m@block(\arabic{#1},\arabic{#2})}
 
 \long\def\binet@m@for@y#1{%
-\setcounter{binet@y}{0}%
+\setcounter{binet@y}\z@
 \@whilenum\value{binet@y}<\binet@matrix@y\do{%
-    \setcounter{binet@x}{0}#1\advance\c@binet@y\@ne
+    \setcounter{binet@x}\z@#1\advance\c@binet@y\@ne
 }}
 
 \long\def\binet@m@for@x#1{%
