@@ -4,107 +4,107 @@
 \RequirePackage{latex-bfs}
 
 % TODO: Store on create to avoid consistent recalc
-\def\iinet@load@p@xy#1>#2,#3;{%
+\def\binet@load@p@xy#1>#2,#3;{%
   \pgfextractx#2{\pgfpointanchor{#1}{center}}%
   \pgfextracty#3{\pgfpointanchor{#1}{center}}%
 }
 
-\def\iinet@@dl@raw{
-\pgfmathsetmacro\@iinet@jx{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@x}%
-\pgfmathsetmacro\@iinet@jy{int(rand*\iinet@jitter@steps)/\iinet@jitter@steps*\iinet@jitter@y}%
+\def\binet@@dl@raw{
+\pgfmathsetmacro\@binet@jx{int(rand*\binet@jitter@steps)/\binet@jitter@steps*\binet@jitter@x}%
+\pgfmathsetmacro\@binet@jy{int(rand*\binet@jitter@steps)/\binet@jitter@steps*\binet@jitter@y}%
 }
 
-\ifiinet@setup@pathfade@
-\newcommand*\iinet@dl@root[1][]{\path[iinet@pathfade={\iinet@getblock@{\iinet@lines@start}{c}}{\iinet@getblock@{\iinet@lines@end}{c}},#1]}%
+\ifbinet@setup@pathfade@
+\newcommand*\binet@dl@root[1][]{\path[binet@pathfade={\binet@getblock@{\binet@lines@start}{c}}{\binet@getblock@{\binet@lines@end}{c}},#1]}%
 \else
-\newcommand*\iinet@dl@root[1][]{\path[iinet@line=\iinet@getblock@{\iinet@lines@start}{c},#1]}%
+\newcommand*\binet@dl@root[1][]{\path[binet@line=\binet@getblock@{\binet@lines@start}{c},#1]}%
 \fi
 
-\def\iinet@@dl@#1{%
-\iinet@@dl@raw
-\iinet@dl@root
-    (iinet-block-\iinet@lines@start)++(\@iinet@jx,\@iinet@jy) #1
-    ([xshift=\@iinet@jx pt,yshift=\@iinet@jy pt]iinet-block-\iinet@lines@end);
+\def\binet@@dl@#1{%
+\binet@@dl@raw
+\binet@dl@root
+    (binet-block-\binet@lines@start)++(\@binet@jx,\@binet@jy) #1
+    ([xshift=\@binet@jx pt,yshift=\@binet@jy pt]binet-block-\binet@lines@end);
 }
 
-\def\iinet@route@lines@pick@ab{%
+\def\binet@route@lines@pick@ab{%
 % pick first block
-\pgfmathrandominteger{\iinet@lines@start}{1}{\value{iinet@block@count}}%
+\pgfmathrandominteger{\binet@lines@start}{1}{\value{binet@block@count}}%
 % target: remove one and add mod total to avoid same
-\pgfmathsetmacro\iinet@lines@end{int(mod(\iinet@lines@start+random(1,\value{iinet@block@count}-1),\value{iinet@block@count}))}
-\ifnum\iinet@lines@end=0\relax
-    \ifnum\iinet@lines@start=1 \def\iinet@lines@end{2}\else
-    \def\iinet@lines@end{1}\fi
+\pgfmathsetmacro\binet@lines@end{int(mod(\binet@lines@start+random(1,\value{binet@block@count}-1),\value{binet@block@count}))}
+\ifnum\binet@lines@end=0\relax
+    \ifnum\binet@lines@start=1 \def\binet@lines@end{2}\else
+    \def\binet@lines@end{1}\fi
 \fi
 % do not draw same twice:
-\ifcsname iinet@line@\iinet@lines@start @\iinet@lines@end\endcsname\else
-\ifcsname iinet@line@\iinet@lines@end @\iinet@lines@start\endcsname\else
-    \iinet@debug{Line: '\iinet@lines@start' -> '\iinet@lines@end'}
-    \@namedef{iinet@line@\iinet@lines@start @\iinet@lines@end}{}
+\ifcsname binet@line@\binet@lines@start @\binet@lines@end\endcsname\else
+\ifcsname binet@line@\binet@lines@end @\binet@lines@start\endcsname\else
+    \binet@debug{Line: '\binet@lines@start' -> '\binet@lines@end'}
+    \@namedef{binet@line@\binet@lines@start @\binet@lines@end}{}
     % Draw the line:
-    \iinet@load@p@xy{iinet-block-\iinet@lines@start}>\iinet@start@x,\iinet@start@y;
-    \iinet@load@p@xy{iinet-block-\iinet@lines@end}>\iinet@end@x,\iinet@end@y;
-    \iinet@route@lines@bfs{\iinet@lines@start}{\iinet@lines@end}%
-    \ifx\iinet@bfs@routing@result\@empty
-    %BFS CALL: \iinet@route@lines@bfs{\iinet@lines@start}{\iinet@lines@end}
-    \pgfmathsetmacro\iinet@delta@x{abs(\iinet@end@x-\iinet@start@x)}%
-    \pgfmathsetmacro\iinet@delta@y{abs(\iinet@end@y-\iinet@start@y)}%
-    \ifdim\iinet@delta@x pt=\z@\relax \iinet@@dl@{--}\else
-        \ifdim\iinet@delta@y pt=\z@\relax \iinet@@dl@{--}\else
-            \ifdim\iinet@delta@y pt>\iinet@delta@x pt\relax
-                \iinet@@dl@{|-}\else
-                \iinet@@dl@{-|}
+    \binet@load@p@xy{binet-block-\binet@lines@start}>\binet@start@x,\binet@start@y;
+    \binet@load@p@xy{binet-block-\binet@lines@end}>\binet@end@x,\binet@end@y;
+    \binet@route@lines@bfs{\binet@lines@start}{\binet@lines@end}%
+    \ifx\binet@bfs@routing@result\@empty
+    %BFS CALL: \binet@route@lines@bfs{\binet@lines@start}{\binet@lines@end}
+    \pgfmathsetmacro\binet@delta@x{abs(\binet@end@x-\binet@start@x)}%
+    \pgfmathsetmacro\binet@delta@y{abs(\binet@end@y-\binet@start@y)}%
+    \ifdim\binet@delta@x pt=\z@\relax \binet@@dl@{--}\else
+        \ifdim\binet@delta@y pt=\z@\relax \binet@@dl@{--}\else
+            \ifdim\binet@delta@y pt>\binet@delta@x pt\relax
+                \binet@@dl@{|-}\else
+                \binet@@dl@{-|}
             \fi
         \fi
     \fi
     \else
-    \iinet@@dl@{ foreach \x/\y in \iinet@bfs@routing@result {-- (\x, \y)} --}%
+    \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {-- (\x, \y)} --}%
     \fi
 \fi\fi
 }
-\def\iinet@route@lines{
-    \pgfmathrandominteger{\iinet@lines@to@draw}{\iinet@lines@min@count}{min(\iinet@lines@max@count,\c@iinet@block@count*2-1)}
-    \iinet@debug{Got '\arabic{iinet@block@count}' blocks connect up to '\iinet@lines@to@draw' lines}
+\def\binet@route@lines{
+    \pgfmathrandominteger{\binet@lines@to@draw}{\binet@lines@min@count}{min(\binet@lines@max@count,\c@binet@block@count*2-1)}
+    \binet@debug{Got '\arabic{binet@block@count}' blocks connect up to '\binet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
-    \setcounter{iinet@c}{0}
-    \@whilenum\value{iinet@c}<\iinet@lines@to@draw\do{
-        \iinet@route@lines@pick@ab
-        \advance\c@iinet@c\@ne
+    \setcounter{binet@c}{0}
+    \@whilenum\value{binet@c}<\binet@lines@to@draw\do{
+        \binet@route@lines@pick@ab
+        \advance\c@binet@c\@ne
     }
     \end{pgfonlayer}
 }
 
 
 % run a breadth first search between #1 and #2 in the given matrix
-% \iinet@if@m@cfree(x,y){<free>}{<blocked>}
-\CreateQueue{iinet@bfs@routing@start}
-\CreateQueue{iinet@bfs@routing@end}
-\CreateQueue{iinet@bfs@routing@result}
+% \binet@if@m@cfree(x,y){<free>}{<blocked>}
+\CreateQueue{binet@bfs@routing@start}
+\CreateQueue{binet@bfs@routing@end}
+\CreateQueue{binet@bfs@routing@result}
 
-\def\iinet@CheckBlock(#1/#2)#3#4{\iinet@if@m@free(\the\numexpr#1-1\relax,\the\numexpr#2-1\relax){#4}{#3}}
+\def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-1\relax,\the\numexpr#2-1\relax){#4}{#3}}
 % queue :#2 => block #1
-\def\iinet@route@lines@setblock@center#1#2{%
-\expandafter\pgfmathsetmacro\csname #2@x\endcsname{int(\iinet@getblock@{#1}{x}+\iinet@getblock@{#1}{w}/2)}
-\expandafter\pgfmathsetmacro\csname #2@y\endcsname{int(\iinet@getblock@{#1}{y}+\iinet@getblock@{#1}{h}/2)}
+\def\binet@route@lines@setblock@center#1#2{%
+\expandafter\pgfmathsetmacro\csname #2@x\endcsname{int(\binet@getblock@{#1}{x}+\binet@getblock@{#1}{w}/2)}
+\expandafter\pgfmathsetmacro\csname #2@y\endcsname{int(\binet@getblock@{#1}{y}+\binet@getblock@{#1}{h}/2)}
 }
 
-\def\iinet@route@lines@bfs#1#2{%
-\iinet@route@lines@setblock@center{#1}{center@start}%
-\iinet@route@lines@setblock@center{#2}{center@end}%
+\def\binet@route@lines@bfs#1#2{%
+\binet@route@lines@setblock@center{#1}{center@start}%
+\binet@route@lines@setblock@center{#2}{center@end}%
 % kill the selected blocks in the block mask
-\iinet@single@block@specialblock{#1}{unblock}%
-\iinet@single@block@specialblock{#2}{unblock}%
-\iinet@update@present@squares
+\binet@single@block@specialblock{#1}{unblock}%
+\binet@single@block@specialblock{#2}{unblock}%
+\binet@update@present@squares
 % clear the result queue
-\ResetQueue{iinet@bfs@routing@result}%
+\ResetQueue{binet@bfs@routing@result}%
 % TODO: same for end block with endl
-\GetShortestPath(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\iinet@width x\iinet@height]{iinet@CheckBlock}{iinet@bfs@routing@result}
-\iinet@debug{Result: \GetQueue{iinet@bfs@routing@result}}
-\edef\iinet@bfs@routing@result{\GetQueue{iinet@bfs@routing@result}}
+\GetShortestPath(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\binet@width x\binet@height]{binet@CheckBlock}{binet@bfs@routing@result}
+\binet@debug{Result: \GetQueue{binet@bfs@routing@result}}
+\edef\binet@bfs@routing@result{\GetQueue{binet@bfs@routing@result}}
 % reinsert the selected blocks in the block mask
-\iinet@single@block@specialblock{#1}{block}%
-\iinet@single@block@specialblock{#2}{block}%
-\iinet@update@present@squares
+\binet@single@block@specialblock{#1}{block}%
+\binet@single@block@specialblock{#2}{block}%
+\binet@update@present@squares
 }
 
 \endinput

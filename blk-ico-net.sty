@@ -1,21 +1,21 @@
 %% block icon network generator package
 %% Florian Sihler, 2021-03-14
 \ProvidesPackage{blk-ico-net}[2021/03/14 v1.0 blk icon network generator package]
-\newif\ifiinet@setup@cpalette@
-\DeclareOption{cpalette}{\iinet@setup@cpalette@true}
-\DeclareOption{nocpalette}{\iinet@setup@cpalette@false}
-\newif\ifiinet@setup@gradient@
-\DeclareOption{gradient}{\iinet@setup@gradient@true}
-\DeclareOption{nogradient}{\iinet@setup@gradient@false}
-\newif\ifiinet@setup@pathfade@
-\DeclareOption{pathfade}{\iinet@setup@pathfade@true}
-\DeclareOption{nopathfade}{\iinet@setup@pathfade@false}
-\newif\ifiinet@setup@frameblock@
-\DeclareOption{frameblock}{\iinet@setup@frameblock@true}
-\DeclareOption{noframeblock}{\iinet@setup@frameblock@false}
-\DeclareOption{debug}{\let\iinet@debug\typeout}
-\DeclareOption{nodebug}{\let\iinet@debug\@gobble}
-\let\iinet@debug\@gobble
+\newif\ifbinet@setup@cpalette@
+\DeclareOption{cpalette}{\binet@setup@cpalette@true}
+\DeclareOption{nocpalette}{\binet@setup@cpalette@false}
+\newif\ifbinet@setup@gradient@
+\DeclareOption{gradient}{\binet@setup@gradient@true}
+\DeclareOption{nogradient}{\binet@setup@gradient@false}
+\newif\ifbinet@setup@pathfade@
+\DeclareOption{pathfade}{\binet@setup@pathfade@true}
+\DeclareOption{nopathfade}{\binet@setup@pathfade@false}
+\newif\ifbinet@setup@frameblock@
+\DeclareOption{frameblock}{\binet@setup@frameblock@true}
+\DeclareOption{noframeblock}{\binet@setup@frameblock@false}
+\DeclareOption{debug}{\let\binet@debug\typeout}
+\DeclareOption{nodebug}{\let\binet@debug\@gobble}
+\let\binet@debug\@gobble
 \ProcessOptions*
 \RequirePackage{tikz,etoolbox}
 \usetikzlibrary{backgrounds,decorations.markings}
@@ -25,57 +25,57 @@
 \RequirePackage{blk-ico-net@block}
 \RequirePackage{blk-ico-net@routing}
 
-\def\iinet@init#1{%
-    \pgfkeys{/iinet@keys,defaults,#1}%
-    \setcounter{iinet@block@count}{0}%
+\def\binet@init#1{%
+    \pgfkeys{/binet@keys,defaults,#1}%
+    \setcounter{binet@block@count}{0}%
 }
 
-\newif\if@iinet@deadcycles@reached@
+\newif\if@binet@deadcycles@reached@
 \newcommand*\blkIcoRandomNet[1][]{\blkIcoNet[#1]{
-    \setcounter{iinet@block@a}{0}
-    \@whilenum\value{iinet@block@a}<\iinet@block@max@count\do{%
-        \iinet@draw@single@block
-        \advance\c@iinet@block@a\@ne
+    \setcounter{binet@block@a}{0}
+    \@whilenum\value{binet@block@a}<\binet@block@max@count\do{%
+        \binet@draw@single@block
+        \advance\c@binet@block@a\@ne
     }
-    \@iinet@deadcycles@reached@false
+    \@binet@deadcycles@reached@false
     % now ensure minimum is met
-    \setcounter{iinet@block@a}{0}
-    \@whilenum\value{iinet@block@count}<\iinet@block@min@count\do{%
-        \iinet@draw@single@block
-        \advance\c@iinet@block@a\@ne
-        \ifnum\value{iinet@block@a}>\iinet@block@deadcycles@count\relax
+    \setcounter{binet@block@a}{0}
+    \@whilenum\value{binet@block@count}<\binet@block@min@count\do{%
+        \binet@draw@single@block
+        \advance\c@binet@block@a\@ne
+        \ifnum\value{binet@block@a}>\binet@block@deadcycles@count\relax
             \PackageWarning{blk-ico-net}{Deadcycles reached.}
-            \edef\iinet@tmpbc{\arabic{iinet@block@count}}%
-            \setcounter{iinet@block@count}{\iinet@block@min@count}%
-            \@iinet@deadcycles@reached@true
+            \edef\binet@tmpbc{\arabic{binet@block@count}}%
+            \setcounter{binet@block@count}{\binet@block@min@count}%
+            \@binet@deadcycles@reached@true
         \fi
     }
-    \if@iinet@deadcycles@reached@\setcounter{iinet@block@count}{\iinet@tmpbc}\fi
-    \iinet@debug@show@matrix% Debug :)
-    \iinet@route@lines
+    \if@binet@deadcycles@reached@\setcounter{binet@block@count}{\binet@tmpbc}\fi
+    \binet@debug@show@matrix% Debug :)
+    \binet@route@lines
 }}
 
 \newenvironment{blk@rootlayer}{\begin{pgfonlayer}{background}}{\end{pgfonlayer}}
 
 \newcommand\blkIcoNet[2][]{\begingroup
-\iinet@init{#1}%
-\begin{tikzpicture}[x=1pt,y=1pt,scale=\iinet@scale]
-    \let\get\iinet@getblock
-    \let\setblock\iinet@setblock
-    \let\setblockrand\iinet@setblockrand
-    \iinet@calcdiffs% 1)
-    \iinet@setup@matrix% 2)
-    \def\iinet@outer@path{(-\iinet@padding@x,-\iinet@padding@y) rectangle (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y)}
-    \path[use as bounding box,\if@iinet@drawframe iinet@frame\fi]\iinet@outer@path;
-    \path[clip,iinet@outer@roundings] \iinet@outer@path;
-    \if@iinet@drawgrid\begin{pgfonlayer}{background}
-        \path[clip,iinet@outer@roundings] \iinet@outer@path;
-        \draw[iinet@grid] (-\iinet@padding@x,-\iinet@padding@y) grid (\iinet@width+\iinet@padding@x,\iinet@height+\iinet@padding@y);
+\binet@init{#1}%
+\begin{tikzpicture}[x=1pt,y=1pt,scale=\binet@scale]
+    \let\get\binet@getblock
+    \let\setblock\binet@setblock
+    \let\setblockrand\binet@setblockrand
+    \binet@calcdiffs% 1)
+    \binet@setup@matrix% 2)
+    \def\binet@outer@path{(-\binet@padding@x,-\binet@padding@y) rectangle (\binet@width+\binet@padding@x,\binet@height+\binet@padding@y)}
+    \path[use as bounding box,\if@binet@drawframe binet@frame\fi]\binet@outer@path;
+    \path[clip,binet@outer@roundings] \binet@outer@path;
+    \if@binet@drawgrid\begin{pgfonlayer}{background}
+        \path[clip,binet@outer@roundings] \binet@outer@path;
+        \draw[binet@grid] (-\binet@padding@x,-\binet@padding@y) grid (\binet@width+\binet@padding@x,\binet@height+\binet@padding@y);
     \end{pgfonlayer}\fi
-    \let\debugmatrix\iinet@debug@show@matrix
-    \let\autoroot\iinet@route@lines
-    \let\block\iinet@fronte@draw@block
-    \let\root\iinet@dl@root
+    \let\debugmatrix\binet@debug@show@matrix
+    \let\autoroot\binet@route@lines
+    \let\block\binet@fronte@draw@block
+    \let\root\binet@dl@root
     \let\rootlayer\blk@rootlayer
     \let\endrootlayer\endblk@rootlayer
     #2
