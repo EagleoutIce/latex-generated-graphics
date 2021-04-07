@@ -7,7 +7,7 @@
         \def\binet@gradient@max{85}%
         \def\binet@gradient@step{22}%
         \edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}%
-        \def\binet@loadBlockColor{\pgfmathsetmacro\binet@gradient@cur{int(\binet@gradient@cur-\binet@gradient@step)}\ifnum\binet@gradient@cur<\binet@gradient@min\edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}\fi\edef\binet@blockcolor{paletteA!\binet@gradient@cur!white}}
+        \def\binet@loadBlockColor{\edef\binet@gradient@cur{\the\numexpr\binet@gradient@cur-\binet@gradient@step}\ifnum\binet@gradient@cur<\binet@gradient@min\edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}\fi\edef\binet@blockcolor{paletteA!\binet@gradient@cur!white}}
     \else
     \pgfmathdeclarerandomlist{binet@colorlist}{{paletteA}{paletteB}{paletteC}{paletteD}}
     \def\binet@loadBlockColor{\pgfmathrandomitem{\binet@blockcolor}{binet@colorlist}}
@@ -18,17 +18,17 @@
     \def\binet@gradient@min{30}%
     \def\binet@gradient@max{85}%
     \def\binet@gradient@step{22}%
-    \edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}%
-    \def\binet@loadBlockColor{\pgfmathsetmacro\binet@gradient@cur{int(\binet@gradient@cur-\binet@gradient@step)}\ifnum\binet@gradient@cur<\binet@gradient@min\edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}\fi\edef\binet@blockcolor{binet@block!\binet@gradient@cur!white}}
+    \edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step}%
+    \def\binet@loadBlockColor{\edef\binet@gradient@cur{\the\numexpr\binet@gradient@cur-\binet@gradient@step}\ifnum\binet@gradient@cur<\binet@gradient@min\edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}\fi\edef\binet@blockcolor{binet@block!\binet@gradient@cur!white}}
     \else
         \def\binet@loadBlockColor{\edef\binet@blockcolor{binet@block}}
     \fi
 \fi
 % TODO: extend with kprim selection etc
-\newcounter{binet@block@count}
-\newcounter{binet@x}\newcounter{binet@y}
-\newcounter{binet@a}\newcounter{binet@b}\newcounter{binet@c}
-\newcounter{binet@block@a}
+\newcount\c@binet@block@count
+\newcount\c@binet@x \newcount\c@binet@y
+\newcount\c@binet@a \newcount\c@binet@b \newcount\c@binet@c
+\newcount\c@binet@block@a
 \newdimen\binet@start@x \newdimen\binet@end@x
 \newdimen\binet@start@y \newdimen\binet@end@y
 
@@ -91,37 +91,26 @@
 square/.code={\edef\binet@width{#1}\def\binet@height{#1}},
 width/.store in=\binet@width, height/.store in=\binet@height,
 padding/.code={\def\binet@padding@x{#1}\def\binet@padding@y{#1}},
-padding x/.store in=\binet@padding@x,
-padding y/.store in=\binet@padding@y,
+padding x/.store in=\binet@padding@x,padding y/.store in=\binet@padding@y,
 inset/.code={\def\binet@inset@x{#1}\def\binet@inset@y{#1}},
-inset x/.store in=\binet@inset@x,
-inset y/.store in=\binet@inset@y,
-min block width/.store in=\binet@block@min@width,
-max block width/.store in=\binet@block@max@width,
-min block height/.store in=\binet@block@min@height,
-max block height/.store in=\binet@block@max@height,
+inset x/.store in=\binet@inset@x,inset y/.store in=\binet@inset@y,
+min block width/.store in=\binet@block@min@width,max block width/.store in=\binet@block@max@width,
+min block height/.store in=\binet@block@min@height,max block height/.store in=\binet@block@max@height,
 min block count/.store in=\binet@block@min@count,
 deadcycles block count/.store in=\binet@block@deadcycles@count,
-max block count/.store in=\binet@block@max@count,
-max line count/.store in=\binet@lines@max@count,
-min line count/.store in=\binet@lines@min@count,
-frame/.is if=@binet@drawframe,
-grid/.is if=@binet@drawgrid,
-grid step/.store in=\binet@grid@step,
+max block count/.store in=\binet@block@max@count,max line count/.store in=\binet@lines@max@count,
+min line count/.store in=\binet@lines@min@count,frame/.is if=@binet@drawframe,
+grid/.is if=@binet@drawgrid,grid step/.store in=\binet@grid@step,
 scale/.store in=\binet@scale,
 defaults/.style={%
     width=\binet@default@width, height=\binet@default@height,
     padding x=\binet@default@padding@x, padding y=\binet@default@padding@y,
     inset x=\binet@default@inset@x, inset y=\binet@default@inset@y,
-    min block width=\binet@default@block@min@width,
-    max block width=\binet@default@block@max@width,
-    min block height=\binet@default@block@min@height,
-    max block height=\binet@default@block@max@height,
-    max block count=\binet@default@block@max@count,
-    min block count=\binet@default@block@min@count,
+    min block width=\binet@default@block@min@width,max block width=\binet@default@block@max@width,
+    min block height=\binet@default@block@min@height,max block height=\binet@default@block@max@height,
+    max block count=\binet@default@block@max@count,min block count=\binet@default@block@min@count,
     deadcycles block count=\binet@default@block@deadcycles@count,
-    max line count=\binet@default@lines@max@count,%
-    min line count=\binet@default@lines@min@count,%
+    max line count=\binet@default@lines@max@count,min line count=\binet@default@lines@min@count,%
     grid step=1pt, scale=\binet@default@scale
 }}
 \endinput

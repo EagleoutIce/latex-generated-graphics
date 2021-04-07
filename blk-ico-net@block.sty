@@ -144,7 +144,8 @@
     \binet@debug{Original y-selection (\binet@selected@y) failed, reshift}
     \c@binet@b\z@
     \@whilenum\c@binet@b<\binet@m@ylist@total\do{%
-        \pgfmathparse{int(mod(\number\c@binet@a+1,\binet@m@ylist@total))}% mod shift 1
+        \pgfmathmod{\number\c@binet@a+1}{\binet@m@ylist@total}
+        \pgfmathint{\pgfmathresult}% mod shift 1
         \c@binet@a\pgfmathresult
         \binet@block@randxy@picky@testfit{\number\c@binet@a}{\get{h}}% free
         \if@binet@flag@a@ % can be placed on this height
@@ -264,8 +265,8 @@
     \ifnum\binet@effective@w<\binet@block@min@width\relax
         \@binet@flag@typeset@block@false
     \else
-        \pgfmathparse{int(min(\binet@effective@w,\get{w},\binet@effective@b))}%
-        \setblock{w}{\pgfmathresult}%
+        \pgfmathmin{\binet@effective@w,\get{w},\binet@effective@b}{}%
+        \pgfmathint{\pgfmathresult}\setblock{w}{\pgfmathresult}%
         \setblockrand{x}{\binet@effective@x}{\binet@effective@x+\binet@effective@w-\get{w}}%
     \fi
 \fi
