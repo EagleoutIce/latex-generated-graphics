@@ -9,40 +9,38 @@
 \let\binet@matrix@x\binet@width
 \let\binet@matrix@y\binet@height
 }
-\def\binet@element{}
+\let\binet@element\@empty
 
 %%% The Lists (why not rndlist? Manipulating them can be quite tedious)
 \def\binet@setup@matrix{
 \binet@m@for@y{% for each y
-    \expandafter\let\csname binet@m@\arabic{binet@y}\endcsname\binet@element
+    \expandafter\let\csname binet@m@\number\c@binet@y\endcsname\binet@element
     \binet@m@for@x{% for each x
-        \expandafter\let\csname binet@m@\arabic{binet@y}@\arabic{binet@x}\endcsname\binet@element
+        \expandafter\let\csname binet@m@\number\c@binet@y @\number\c@binet@x\endcsname\binet@element
     }%
 }%
 \binet@update@present@squares
 }
 
 \def\binet@m@get(#1,#2){\csname binet@m@#2@#1\endcsname}% (x, y)
-\def\binet@m@cget(#1,#2){\binet@m@get(\arabic{#1},\arabic{#2})}% (x, y) but with counters
+\def\binet@m@cget(#1,#2){\binet@m@get(\number\csname c@#1\endcsname,\number\csname c@#2\endcsname)}% (x, y) but with counters
 
 \long\def\binet@if@m@free(#1,#2)#3#4{\ifcsname binet@m@#2@#1\endcsname#3\else#4\fi}
-\def\binet@if@m@cfree(#1,#2){\binet@if@m@free(\arabic{#1},\arabic{#2})}
+\def\binet@if@m@cfree(#1,#2){\binet@if@m@free(\number\csname c@#1\endcsname,\number\csname c@#2\endcsname)}
 
-\def\binet@m@block(#1,#2){%
-    \expandafter\expandafter\expandafter%
-    \undef\binet@m@get(#1,#2)}
-\def\binet@m@unblock(#1,#2){%
-    \expandafter\def\csname binet@m@#2@#1\endcsname{}}
-\def\binet@m@cblock(#1,#2){\binet@m@block(\arabic{#1},\arabic{#2})}
+\def\binet@m@block(#1,#2){% only double expand now
+    \expandafter\expandafter\expandafter\undef\binet@m@get(#1,#2)}
+\def\binet@m@unblock(#1,#2){\expandafter\let\csname binet@m@#2@#1\endcsname\@empty}
+\def\binet@m@cblock(#1,#2){\binet@m@block(\number\csname c@#1\endcsname,\number\csname c@#2\endcsname)}
 
 \long\def\binet@m@for@y#1{%
 \c@binet@y\z@
-\@whilenum\value{binet@y}<\binet@matrix@y\do{%
+\@whilenum\c@binet@y<\binet@matrix@y\do{%
     \c@binet@x\z@#1\advance\c@binet@y\@ne
 }}
 
 \long\def\binet@m@for@x#1{%
-\@whilenum\value{binet@x}<\binet@matrix@x\do{% for each x
+\@whilenum\c@binet@x<\binet@matrix@x\do{% for each x
     #1\advance\c@binet@x\@ne
 }}
 \endinput

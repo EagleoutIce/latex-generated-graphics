@@ -49,22 +49,22 @@
 }
 
 \def\binet@getblock@#1#2{\csname binet@block@#1@#2\endcsname}
-\def\binet@getblock#1{\csname binet@block@\arabic{binet@block@count}@#1\endcsname}
+\def\binet@getblock#1{\csname binet@block@\number\c@binet@block@count @#1\endcsname}
 
 \def\binet@setblock#1#2{%
-\expandafter\edef\csname binet@block@\arabic{binet@block@count}@#1\endcsname{#2}%
+\expandafter\edef\csname binet@block@\number\c@binet@block@count @#1\endcsname{#2}%
 }
 
 \def\binet@setblockrand#1#2#3{\pgfmathrandominteger{\@binet@tmp}{#2}{#3}\setblock{#1}{\@binet@tmp}}
 \def\binet@m@max@of@y#1{\ifcsname binet@max@#1@x\endcsname\@nameuse{binet@max@#1@x}\else-1\fi}
-\def\binet@get@consecutive@x@{\ifnum\value{binet@a}>\@binet@con@x\relax\edef\@binet@con@x{\arabic{binet@a}}\fi\setcounter{binet@a}\z@}
+\def\binet@get@consecutive@x@{\ifnum\value{binet@a}>\@binet@con@x\relax\edef\@binet@con@x{\number\c@binet@a}\fi\c@binet@a\z@}
 
 \def\binet@get@consecutive@x#1{%
 % do not run if already known 0
-\ifnum\binet@m@max@of@y{\arabic{binet@y}}=0\relax\else
-\setcounter{binet@a}\z@% current
+\ifnum\binet@m@max@of@y{\number\c@binet@y}=\z@\else
+\c@binet@a\z@% current
 \def\@binet@con@x{0}% maximum
-\setcounter{binet@x}{#1}% start x
+\c@binet@x#1\relax% start x
 \binet@m@for@x{%
     \binet@if@m@cfree(binet@x,binet@y)%
         {\stepcounter{binet@a}}% free
@@ -74,12 +74,12 @@
 
 \def\binet@get@consecutive@y@{\ifnum\value{binet@a}>\@binet@con@y\relax\edef\@binet@con@y{\arabic{binet@a}}\fi\setcounter{binet@a}\z@}
 \def\binet@get@consecutive@y{%
-\setcounter{binet@a}\z@% current
-\setcounter{binet@b}\z@% total added
+\c@binet@a\z@% current
+\c@binet@b\z@% total added
 \def\@binet@con@y{0}% maximum
 \def\binet@m@ylist{}%
 \binet@m@for@y{%
-    \ifnum\binet@m@max@of@y{\arabic{binet@y}}=0\relax
+    \ifnum\binet@m@max@of@y{\number\c@binet@y}=0\relax
         \binet@get@consecutive@y@
     \else
         \stepcounter{binet@a}\stepcounter{binet@b}%
@@ -101,13 +101,13 @@
 
 \def\binet@block@randxy@picky@first{%
     \pgfmathrandominteger{\binet@rand@y}{0}{\binet@m@ylist@total-\get{h}-1}
-    \setcounter{binet@a}\z@% current
+    \c@binet@a\z@% current
     \def\binet@selected@y{-1}%
     \def\do##1{%
-        \ifnum\value{binet@a}=\binet@rand@y\relax
+        \ifnum\c@binet@a=\binet@rand@y\relax
             \edef\binet@selected@y{##1}%
         \fi
-        \stepcounter{binet@a}%
+        \advance\c@binet@a\@ne
     }
     \dolistloop{\binet@m@ylist}%
 }
@@ -118,12 +118,12 @@
     \setcounter{binet@y}{#1}%
     \@binet@flag@a@true
     \edef\@binet@y{\the\numexpr#1+#2+\@ne}% +1 as y not <=
-    \@whilenum\value{binet@y}<\@binet@y\do{%
+    \@whilenum\c@binet@y<\@binet@y\do{%
         \edef\@binet@tmp{\binet@m@max@of@y{\arabic{binet@y}}}%
         \ifnum\@binet@tmp<1 % 0 or invalid
             \@binet@flag@a@false
         \fi
-        \stepcounter{binet@y}
+        \advance\c@binet@y\@ne
     }
 }
 
@@ -133,7 +133,7 @@
 % there have to be at least 'h' remaining
 \binet@block@randxy@picky@first
 \setcounter{binet@a}{\binet@selected@y}%
-\ifnum\binet@selected@y<0\relax
+\ifnum\binet@selected@y<0
     \PackageWarning{blk-ico-net}{first y pick selected '\binet@selected@y' which is registered as a warning. Block will be omitted}
     \@binet@flag@typeset@block@false
 \fi
@@ -142,27 +142,27 @@
     % if this is set binet@a does not suffice
     % so we cycle until it fits or binet@a=\binet@selected@y
     \binet@debug{Original y-selection (\binet@selected@y) failed, reshift}
-    \setcounter{binet@b}\z@
+    \c@binet@b\z@
     \@whilenum\value{binet@b}<\binet@m@ylist@total\do{%
-        \pgfmathparse{int(mod(\arabic{binet@a}+1,\binet@m@ylist@total))}% mod shift 1
-        \setcounter{binet@a}{\pgfmathresult}
+        \pgfmathparse{int(mod(\number\c@binet@a+1,\binet@m@ylist@total))}% mod shift 1
+        \c@binet@a\pgfmathresult
         \binet@block@randxy@picky@testfit{\arabic{binet@a}}{\get{h}}% free
         \if@binet@flag@a@ % can be placed on this height
-            \setcounter{binet@b}{\binet@m@ylist@total}% 'break'
+            \c@binet@b\binet@m@ylist@total\relax% 'break'
         \fi
-        \stepcounter{binet@b}%
+        \advance\c@binet@b\@ne
     }
 \fi
 \setblock{y}{\arabic{binet@a}}%
 }
 
 \def\binet@get@topline@x@{%
-    \ifnum\value{binet@a}<\value{binet@b}\else
+    \ifnum\c@binet@a<\c@binet@b\else
         \listeadd\@binet@topline@x{\@binet@curx:\arabic{binet@a}}%
-        \stepcounter{binet@c}%
+        \advance\c@binet@c\@ne
         \edef\@binet@curx{\arabic{binet@x}}
     \fi
-    \setcounter{binet@a}\z@
+    \c@binet@a\z@
 }
 
 \def\binet@split@listelem#1:#2;{\edef\binet@cur@xidx{#1}\edef\binet@cur@xlen{#2}}
@@ -187,7 +187,7 @@
         \ifnum\c@binet@a=\binet@desired@idx\relax
             \edef\binet@selected@x{##1}%
         \fi
-        \stepcounter{binet@a}%
+        \advance\c@binet@a\@ne
     }
     \dolistloop{\@binet@topline@x}%
     \ifx\binet@selected@x\@empty % if does not catch => save
@@ -213,11 +213,11 @@
     \def\@binet@sub@lastidx{0}%
     \def\@binet@sub@xidx{0}%
     \def\@binet@sub@xlen{-1}%
-    \@whilenum\value{binet@x}<\numexpr\binet@cur@xidx+\binet@cur@xlen+1\relax\do{%
+    \@whilenum\c@binet@x<\numexpr\binet@cur@xidx+\binet@cur@xlen+\@ne\relax\do{%
         \binet@if@m@cfree(binet@x,binet@y)%
             {\stepcounter{binet@a}}% free
             {\binet@get@xrange@x@}%
-        \stepcounter{binet@x}%
+        \advance\c@binet@x\@ne
     }\binet@get@xrange@x@
     % intersect [sub:xidx..xidx+xlen] and [cur:xidx..xidx+xlen]
     \edef\binet@cur@xidx@old{\binet@cur@xidx}%
@@ -233,11 +233,11 @@
 \def\binet@block@randxy@pickxw{%
 % find largest rectangle on y
 % trying from block@min@width up to max@[y]@x
-\setblockrand{w}{\binet@block@min@width}{min(\binet@block@max@width,\binet@m@max@of@y{\get{y}})}%
+\setblockrand{w}\binet@block@min@width{min(\binet@block@max@width,\binet@m@max@of@y{\get{y}})}%
 \c@binet@b\binet@block@min@width
 \def\binet@effective@w{0}%
 \def\binet@effective@x{0}%
-\@whilenum\c@binet@b<\numexpr\get{w}+\@ne\relax\do{%
+\@whilenum\c@binet@b<\numexpr\get{w}+\@ne\do{%
     \c@binet@y\get{y}\relax
     % find start in topline => \binet@cur@xidx & \binet@cur@xlen
     \binet@block@randxy@pickxw@topline
