@@ -35,11 +35,7 @@
 % The goal is to create small icons of given sizes
 % which all present a random but simple blk icon
 % pt will serve as the basic unit
-\def\binet@newlength#1=#2;{% legacy :C
-\expandafter\newlength\csname binet@#1\endcsname
-\expandafter\newlength\csname binet@default@#1\endcsname
-\expandafter\csname binet@default@#1\endcsname=#2}
-\def\binet@newreg#1=#2;{\expandafter\def\csname binet@default@#1\endcsname{#2}}
+\def\binet@newreg#1=#2;{\expandafter\def\csname binet@df@#1\endcsname{#2}}
 \binet@newreg padding@x=2;
 \binet@newreg padding@y=2;
 \binet@newreg scale=1;
@@ -103,14 +99,14 @@ min line count/.store in=\binet@lines@min@count,frame/.is if=@binet@drawframe,
 grid/.is if=@binet@drawgrid,grid step/.store in=\binet@grid@step,
 scale/.store in=\binet@scale,
 defaults/.style={%
-    width=\binet@default@width, height=\binet@default@height,
-    padding x=\binet@default@padding@x, padding y=\binet@default@padding@y,
-    inset x=\binet@default@inset@x, inset y=\binet@default@inset@y,
-    min block width=\binet@default@block@min@width,max block width=\binet@default@block@max@width,
-    min block height=\binet@default@block@min@height,max block height=\binet@default@block@max@height,
-    max block count=\binet@default@block@max@count,min block count=\binet@default@block@min@count,
-    deadcycles block count=\binet@default@block@deadcycles@count,
-    max line count=\binet@default@lines@max@count,min line count=\binet@default@lines@min@count,%
-    grid step=1pt, scale=\binet@default@scale
+    width=\binet@df@width, height=\binet@df@height,
+    padding x=\binet@df@padding@x, padding y=\binet@df@padding@y,
+    inset x=\binet@df@inset@x, inset y=\binet@df@inset@y,
+    min block width=\binet@df@block@min@width,max block width=\binet@df@block@max@width,
+    min block height=\binet@df@block@min@height,max block height=\binet@df@block@max@height,
+    max block count=\binet@df@block@max@count,min block count=\binet@df@block@min@count,
+    deadcycles block count=\binet@df@block@deadcycles@count,
+    max line count=\binet@df@lines@max@count,min line count=\binet@df@lines@min@count,%
+    grid step=1pt, scale=\binet@df@scale
 }}
 \endinput
