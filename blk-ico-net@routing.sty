@@ -30,7 +30,7 @@
 \ifcsname binet@line@\binet@lines@start @\binet@lines@end\endcsname\else
 \ifcsname binet@line@\binet@lines@end @\binet@lines@start\endcsname\else
     \binet@debug{Line: '\binet@lines@start' -> '\binet@lines@end'}
-    \@namedef{binet@line@\binet@lines@start @\binet@lines@end}{}
+    \expandafter\let\csname binet@line@\binet@lines@start @\binet@lines@end\endcsname\@empty
     % Draw the line:
     \binet@load@p@xy{binet-block-\binet@lines@start}>\binet@start@x,\binet@start@y;
     \binet@load@p@xy{binet-block-\binet@lines@end}>\binet@end@x,\binet@end@y;
