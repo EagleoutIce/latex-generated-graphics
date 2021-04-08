@@ -2,6 +2,8 @@
 %% Florian Sihler, 2021-03-14
 \ProvidesPackage{blk-ico-net@block}[2021/03/14 v1.0 blk icon network generator package]
 
+\RequirePackage{blk-ico-net@math}
+
 %%% How (TODO: rasterize: TODO: maximum number? TODO: padding [save #pt bigger blocks?])
 % NOTE: changed usage... not min; inefficient approach at first ^^
 % 1) calculate differences between min and max for both dimens: block@dif@{x,y}
@@ -55,8 +57,8 @@
 \expandafter\edef\csname binet@block@\number\c@binet@block@count @#1\endcsname{#2}%
 }
 
-\def\binet@setblockrand#1#2#3{\pgfmathrandominteger{\@binet@tmp}{#2}{#3}\setblock{#1}{\@binet@tmp}}
-\def\binet@m@max@of@y#1{\ifcsname binet@max@#1@x\endcsname\@nameuse{binet@max@#1@x}\else-1\fi}
+\def\binet@setblockrand#1#2#3{\binet@math@getrand@int\@binet@tmp{#2}{#3}\setblock{#1}\@binet@tmp}
+\def\binet@m@max@of@y#1{\ifcsname binet@max@#1@x\endcsname\csname binet@max@#1@x\endcsname\else-1\fi}
 \def\binet@get@consecutive@x@{\ifnum\c@binet@a>\@binet@con@x\relax\edef\@binet@con@x{\number\c@binet@a}\fi\c@binet@a\z@}
 
 \def\binet@get@consecutive@x#1{%
@@ -100,7 +102,7 @@
 }
 
 \def\binet@block@randxy@picky@first{%
-    \pgfmathrandominteger{\binet@rand@y}{0}{\binet@m@ylist@total-\get{h}-1}
+    \binet@math@getrand@int\binet@rand@y\z@{\the\numexpr\binet@m@ylist@total-\get{h}-\@ne}
     \c@binet@a\z@% current
     \def\binet@selected@y{-1}%
     \def\do##1{%
@@ -183,7 +185,7 @@
     % select random element and split '@'
     \c@binet@a\z@% current
     \def\binet@selected@x{}%
-    \pgfmathrandominteger{\binet@desired@idx}{0}{\c@binet@c-1}
+    \binet@math@getrand@int\binet@desired@idx\z@{\the\numexpr\c@binet@c-\@ne}
     \def\do##1{%
         \ifnum\c@binet@a=\binet@desired@idx\relax
             \edef\binet@selected@x{##1}%
@@ -234,7 +236,8 @@
 \def\binet@block@randxy@pickxw{%
 % find largest rectangle on y
 % trying from block@min@width up to max@[y]@x
-\setblockrand{w}\binet@block@min@width{min(\binet@block@max@width,\binet@m@max@of@y{\get{y}})}%
+\binet@math@min@two\@tmp\binet@block@max@width{\binet@m@max@of@y{\get{y}}}
+\setblockrand{w}\binet@block@min@width\@tmp
 \c@binet@b\binet@block@min@width
 \def\binet@effective@w{0}%
 \def\binet@effective@x{0}%
@@ -265,16 +268,17 @@
     \ifnum\binet@effective@w<\binet@block@min@width\relax
         \@binet@flag@typeset@block@false
     \else
-        \pgfmathmin{\binet@effective@w,\get{w},\binet@effective@b}{}%
-        \pgfmathint{\pgfmathresult}\setblock{w}{\pgfmathresult}%
-        \setblockrand{x}{\binet@effective@x}{\binet@effective@x+\binet@effective@w-\get{w}}%
+        \binet@math@min@three\@tmp{\binet@effective@w}{\get{w}}{\binet@effective@b}
+        \setblock{w}{\@tmp}%
+        \setblockrand{x}\binet@effective@x{\the\numexpr\binet@effective@x+\binet@effective@w-\get{w}}%
     \fi
 \fi
 }
 
 % TODO: if fails for current h, try with one h less
-\def\binet@block@randxy{
-    \setblockrand{h}{\binet@block@min@height}{min(\binet@block@max@height,\binet@max@y)}% 4)
+\def\binet@block@randxy{%
+    \binet@math@min@two\@tmp\binet@block@max@height\binet@max@y
+    \setblockrand{h}\binet@block@min@height\@tmp% 4)
     \binet@block@randxy@picky% 5)
     \binet@block@randxy@pickxw% 6)
 }

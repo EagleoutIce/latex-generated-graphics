@@ -19,9 +19,9 @@
 
 \def\binet@route@lines@pick@ab{%
 % pick first block
-\pgfmathrandominteger{\binet@lines@start}{1}{\c@binet@block@count}%
+\binet@math@getrand@int\binet@lines@start1\c@binet@block@count
 % target: remove one and add mod total to avoid same
-\pgfmathsetmacro\binet@lines@end{int(mod(\binet@lines@start+random(1,\c@binet@block@count-1),\c@binet@block@count))}
+\pgfmathsetmacro\binet@lines@end{int(mod(\binet@lines@start+random(1,\c@binet@block@count-1),\c@binet@block@count))}%
 \ifnum\binet@lines@end=0
     \ifnum\binet@lines@start=1 \def\binet@lines@end{2}\else
     \def\binet@lines@end{1}\fi
@@ -38,9 +38,9 @@
     \ifx\binet@bfs@routing@result\@empty
     %BFS CALL: \binet@route@lines@bfs{\binet@lines@start}{\binet@lines@end}
     \edef\@tmp{\the\numexpr\binet@end@x-\binet@start@x}
-    \pgfmathabs{\@tmp}\let\binet@delta@x\@tmp
+    \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@x\@tmp
     \edef\@tmp{\the\numexpr\binet@end@y-\binet@start@y}
-    \pgfmathabs{\@tmp}\let\binet@delta@y\@tmp
+    \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@y\@tmp
     \ifdim\binet@delta@x pt=\z@\relax \binet@@dl@{--}\else
         \ifdim\binet@delta@y pt=\z@\relax \binet@@dl@{--}\else
             \ifdim\binet@delta@y pt>\binet@delta@x pt\relax
@@ -54,7 +54,8 @@
     \fi
 \fi\fi}
 \def\binet@route@lines{
-    \pgfmathrandominteger{\binet@lines@to@draw}{\binet@lines@min@count}{min(\binet@lines@max@count,\c@binet@block@count*2-1)}
+    \binet@math@min@two\@tmp\binet@lines@max@count{\the\numexpr\c@binet@block@count*\tw@-\@ne}
+    \binet@math@getrand@int\binet@lines@to@draw\binet@lines@min@count\@tmp
     \binet@debug{Got '\number\c@binet@block@count' blocks connect up to '\binet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
     \c@binet@c\z@
@@ -74,11 +75,13 @@
 
 \def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-\@ne,\the\numexpr#2-\@ne){#4}{#3}}
 % queue :#2 => block #1
-\def\binet@route@lines@setblock@center#1#2{%
-\pgfmathdiv{\binet@getblock@{#1}{w}}{2}%
-\expandafter\edef\csname #2@x\endcsname{\the\numexpr\binet@getblock@{#1}{x}+\pgfmathresult}%
-\pgfmathdiv{\binet@getblock@{#1}{h}}{2}%
-\expandafter\edef\csname #2@y\endcsname{\the\numexpr\binet@getblock@{#1}{y}+\pgfmathresult}}
+\def\binet@route@lines@setblock@center#1#2{% add one for int rounding error? TODO: .5
+\c@pgfmath@counta\the\numexpr\binet@getblock@{#1}{w}+\@ne\relax
+\divide\c@pgfmath@counta\tw@
+\expandafter\edef\csname #2@x\endcsname{\the\numexpr\binet@getblock@{#1}{x}+\c@pgfmath@counta}%
+\c@pgfmath@counta\the\numexpr\binet@getblock@{#1}{h}+\@ne\relax
+\divide\c@pgfmath@counta\tw@
+\expandafter\edef\csname #2@y\endcsname{\the\numexpr\binet@getblock@{#1}{y}+\c@pgfmath@counta}}
 
 \def\binet@route@lines@bfs#1#2{%
 \binet@route@lines@setblock@center{#1}{center@start}%

@@ -1,0 +1,33 @@
+%% block icon network generator package
+%% Florian Sihler, 2021-03-14
+\ProvidesPackage{blk-ico-net@math}[2021/03/14 v1.0 blk icon network generator package]
+
+\def\binet@math@min@two#1#2#3{\ifnum#2<#3 \edef#1{#2}\else \edef#1{#3}\fi}
+
+\def\binet@math@min@three#1#2#3#4{%
+    \ifnum#2<#3 \ifnum#2<#4 \edef#1{#2} \else
+        \ifnum#3<#4 \edef#1{#3} \else \edef#1{#4} \fi \fi
+    \else \ifnum#3<#4 \edef#1{#3} \else \edef#1{#4} \fi \fi
+}
+
+\def\binet@math@getrand@int#1#2#3{%
+    \begingroup
+    \c@pgfmath@counta#2\relax \c@pgfmath@countb#3\relax
+    \c@pgfmath@countc\c@pgfmath@countb
+    \ifnum\c@pgfmath@counta>\c@pgfmath@countb\relax
+        \c@pgfmath@countc\c@pgfmath@countb
+        \c@pgfmath@countb\c@pgfmath@counta
+        \c@pgfmath@counta\c@pgfmath@countc
+    \fi
+    \advance\c@pgfmath@countc\@ne
+    \advance\c@pgfmath@countc-\c@pgfmath@counta
+    \pgfmathgeneratepseudorandomnumber\c@pgfmath@counta\pgfmathresult\relax
+    \c@pgfmath@countb\c@pgfmath@counta
+    \divide\c@pgfmath@countb\c@pgfmath@countc
+    \multiply\c@pgfmath@countb-\c@pgfmath@countc
+    \advance\c@pgfmath@counta\c@pgfmath@countb
+    \pgfmathaddtocount\c@pgfmath@counta{#2}%
+    \edef\pgfmathresult{\the\c@pgfmath@counta}\pgfmath@smuggleone{\pgfmathresult}\endgroup
+    \edef#1{\pgfmathresult}%
+}
+\endinput

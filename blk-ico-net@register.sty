@@ -6,11 +6,11 @@
         \def\binet@gradient@min{30}%
         \def\binet@gradient@max{85}%
         \def\binet@gradient@step{22}%
-        \edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}%
+        \edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step}%
         \def\binet@loadBlockColor{\edef\binet@gradient@cur{\the\numexpr\binet@gradient@cur-\binet@gradient@step}\ifnum\binet@gradient@cur<\binet@gradient@min\edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}\fi\edef\binet@blockcolor{paletteA!\binet@gradient@cur!white}}
     \else
     \pgfmathdeclarerandomlist{binet@colorlist}{{paletteA}{paletteB}{paletteC}{paletteD}}
-    \def\binet@loadBlockColor{\pgfmathrandomitem{\binet@blockcolor}{binet@colorlist}}
+    \def\binet@loadBlockColor{\pgfmathrandomitem\binet@blockcolor{binet@colorlist}}
     \fi
 \else
     \colorlet{binet@block}{purple}
