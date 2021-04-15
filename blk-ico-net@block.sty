@@ -1,7 +1,6 @@
 %% block icon network generator package
 %% Florian Sihler, 2021-03-14
 \ProvidesPackage{blk-ico-net@block}[2021/03/14 v1.0 blk icon network generator package]
-
 \RequirePackage{blk-ico-net@math}
 
 %%% How (TODO: rasterize: TODO: maximum number? TODO: padding [save #pt bigger blocks?])
@@ -33,9 +32,7 @@
 % location (lower-left) | color | width | height | special name
 \def\binet@draw@single@@block#1#2#3#4#5{% TODO: union node with current path
 \path[binet@block=#2] (#1)++(\binet@inset@x,\binet@inset@y) rectangle ++(#3-\binet@inset@x,#4-\binet@inset@y) node[%
-    midway,outer sep=\z@,inner sep=\z@,
-    minimum width=#3-\binet@inset@x pt,
-    minimum height=#4-\binet@inset@y pt,% TODO: change shading
+    minimum width=#3-\binet@inset@x\p@, minimum height=#4-\binet@inset@y\p@,%
     binet@node@block=#2%
 ] (#5) {}  coordinate[midway,centered] (binet-block-\number\c@binet@block@count);
 }
@@ -102,7 +99,7 @@
 }
 
 \def\binet@block@randxy@picky@first{%
-    \binet@math@getrand@int\binet@rand@y\z@{\the\numexpr\binet@m@ylist@total-\get{h}-\@ne}
+    \binet@math@getrand@int\binet@rand@y\z@{\the\numexpr\binet@m@ylist@total-\get{h}-1}
     \c@binet@a\z@% current
     \def\binet@selected@y{-1}%
     \def\do##1{%
@@ -119,7 +116,7 @@
     % \binet@m@max@of@y
     \c@binet@y#1\relax
     \@binet@flag@a@true
-    \edef\@binet@y{\the\numexpr#1+#2+\@ne}% +1 as y not <=
+    \edef\@binet@y{\the\numexpr#1+#2+1}% +1 as y not <=
     \@whilenum\c@binet@y<\@binet@y\do{%
         \edef\@binet@tmp{\binet@m@max@of@y{\number\c@binet@y}}%
         \ifnum\@binet@tmp<1 % 0 or invalid
@@ -172,7 +169,7 @@
 
 \def\binet@block@randxy@pickxw@topline{%
     \def\@binet@topline@x{}
-    \ifnum\binet@m@max@of@y{\number\c@binet@y}=\z@\else
+    \ifnum\binet@m@max@of@y{\number\c@binet@y}=0\else
     \c@binet@a\z@% current
     \c@binet@x\z@
     \c@binet@c\z@% total
@@ -185,7 +182,7 @@
     % select random element and split '@'
     \c@binet@a\z@% current
     \def\binet@selected@x{}%
-    \binet@math@getrand@int\binet@desired@idx\z@{\the\numexpr\c@binet@c-\@ne}
+    \binet@math@getrand@int\binet@desired@idx\z@{\the\numexpr\c@binet@c-1}
     \def\do##1{%
         \ifnum\c@binet@a=\binet@desired@idx\relax
             \edef\binet@selected@x{##1}%
@@ -203,7 +200,7 @@
 \def\binet@get@xrange@x@{%
     \ifnum\c@binet@a>\@binet@sub@xlen\relax
         \edef\@binet@sub@xlen{\number\c@binet@a}%
-        \edef\@binet@sub@xidx{\@binet@sub@lastidx}%
+        \let\@binet@sub@xidx\@binet@sub@lastidx
     \fi
     \c@binet@a\z@
     \edef\@binet@sub@lastidx{\number\c@binet@x}%
@@ -216,7 +213,7 @@
     \def\@binet@sub@lastidx{0}%
     \def\@binet@sub@xidx{0}%
     \def\@binet@sub@xlen{-1}%
-    \@whilenum\c@binet@x<\numexpr\binet@cur@xidx+\binet@cur@xlen+\@ne\relax\do{%
+    \@whilenum\c@binet@x<\numexpr\binet@cur@xidx+\binet@cur@xlen+1\relax\do{%
         \binet@if@m@cfree(binet@x,binet@y)%
             {\advance\c@binet@a\@ne}% free
             {\binet@get@xrange@x@}%
@@ -241,7 +238,7 @@
 \c@binet@b\binet@block@min@width
 \def\binet@effective@w{0}%
 \def\binet@effective@x{0}%
-\@whilenum\c@binet@b<\numexpr\get{w}+\@ne\do{%
+\@whilenum\c@binet@b<\numexpr\get{w}+1\do{%
     \c@binet@y\get{y}\relax
     % find start in topline => \binet@cur@xidx & \binet@cur@xlen
     \binet@block@randxy@pickxw@topline
@@ -329,7 +326,7 @@
     \binet@single@block@block
   \else
     % free registers
-    \advance\c@binet@block@count-\@ne
+    \advance\c@binet@block@count\m@ne
   \fi
 }
 \endinput

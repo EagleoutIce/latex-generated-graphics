@@ -19,7 +19,7 @@
     \def\binet@gradient@max{85}%
     \def\binet@gradient@step{22}%
     \edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step}%
-    \def\binet@loadBlockColor{\edef\binet@gradient@cur{\the\numexpr\binet@gradient@cur-\binet@gradient@step}\ifnum\binet@gradient@cur<\binet@gradient@min\edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step\relax}\fi\edef\binet@blockcolor{binet@block!\binet@gradient@cur!white}}
+    \def\binet@loadBlockColor{\edef\binet@gradient@cur{\the\numexpr\binet@gradient@cur-\binet@gradient@step}\ifnum\binet@gradient@cur<\binet@gradient@min\edef\binet@gradient@cur{\the\numexpr\binet@gradient@max+\binet@gradient@step}\fi\edef\binet@blockcolor{binet@block!\binet@gradient@cur!white}}
     \else
         \def\binet@loadBlockColor{\edef\binet@blockcolor{binet@block}}
     \fi
@@ -78,9 +78,10 @@
     binet@pathfade/.style 2 args={binet@@pathfade={.45pt}{#1}{#2}},
 }
 
+\tikzset{binet@node@block/.style={midway,outer sep=\z@,inner sep=\z@}}
 \ifbinet@setup@frameblock@
-\tikzset{binet@node@block/.style={draw,thin,#1!80!black}}
-\else\tikzset{binet@node@block/.style={}}\fi
+\tikzset{binet@node@block/.append style={draw,thin,#1!80!black}}
+\else\tikzset{binet@node@block/.append style={}}\fi
 
 \pgfkeys{%
 /binet@keys/.is family, /binet@keys,

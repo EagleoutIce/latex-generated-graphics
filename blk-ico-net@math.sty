@@ -6,8 +6,8 @@
 
 \def\binet@math@min@three#1#2#3#4{%
     \ifnum#2<#3 \ifnum#2<#4 \edef#1{#2} \else
-        \ifnum#3<#4 \edef#1{#3} \else \edef#1{#4} \fi \fi
-    \else \ifnum#3<#4 \edef#1{#3} \else \edef#1{#4} \fi \fi
+        \ifnum#3<#4 \edef#1{#3} \else\edef#1{#4} \fi\fi
+    \else\ifnum#3<#4 \edef#1{#3} \else\edef#1{#4} \fi\fi
 }
 
 \def\binet@math@getrand@int#1#2#3{%

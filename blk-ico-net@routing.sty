@@ -41,9 +41,9 @@
     \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@x\@tmp
     \edef\@tmp{\the\numexpr\binet@end@y-\binet@start@y}
     \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@y\@tmp
-    \ifdim\binet@delta@x pt=\z@\relax \binet@@dl@{--}\else
-        \ifdim\binet@delta@y pt=\z@\relax \binet@@dl@{--}\else
-            \ifdim\binet@delta@y pt>\binet@delta@x pt\relax
+    \ifdim\binet@delta@x\p@=\z@\relax \binet@@dl@{--}\else
+        \ifdim\binet@delta@y\p@=\z@\relax \binet@@dl@{--}\else
+            \ifdim\binet@delta@y\p@>\binet@delta@x\p@\relax
                 \binet@@dl@{|-}\else
                 \binet@@dl@{-|}
             \fi
@@ -51,8 +51,7 @@
     \fi
     \else
     \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {--(\x, \y)}--}%
-    \fi
-\fi\fi}
+\fi\fi\fi}
 \def\binet@route@lines{
     \binet@math@min@two\@tmp\binet@lines@max@count{\the\numexpr\c@binet@block@count*\tw@-\@ne}
     \binet@math@getrand@int\binet@lines@to@draw\binet@lines@min@count\@tmp
@@ -66,20 +65,19 @@
     \end{pgfonlayer}
 }
 
-
 % run a breadth first search between #1 and #2 in the given matrix
 % \binet@if@m@cfree(x,y){<free>}{<blocked>}
 \CreateQueue{binet@bfs@routing@start}
 \CreateQueue{binet@bfs@routing@end}
 \CreateQueue{binet@bfs@routing@result}
 
-\def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-\@ne,\the\numexpr#2-\@ne){#4}{#3}}
+\def\binet@CheckBlock(#1/#2)#3#4{\binet@if@m@free(\the\numexpr#1-1,\the\numexpr#2-1){#4}{#3}}
 % queue :#2 => block #1
 \def\binet@route@lines@setblock@center#1#2{% add one for int rounding error? TODO: .5
-\c@pgfmath@counta\the\numexpr\binet@getblock@{#1}{w}+\@ne\relax
+\c@pgfmath@counta\the\numexpr\binet@getblock@{#1}{w}+1\relax
 \divide\c@pgfmath@counta\tw@
 \expandafter\edef\csname #2@x\endcsname{\the\numexpr\binet@getblock@{#1}{x}+\c@pgfmath@counta}%
-\c@pgfmath@counta\the\numexpr\binet@getblock@{#1}{h}+\@ne\relax
+\c@pgfmath@counta\the\numexpr\binet@getblock@{#1}{h}+1\relax
 \divide\c@pgfmath@counta\tw@
 \expandafter\edef\csname #2@y\endcsname{\the\numexpr\binet@getblock@{#1}{y}+\c@pgfmath@counta}}
 
