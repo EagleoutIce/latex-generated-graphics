@@ -68,12 +68,11 @@
     binet@block/.style={fill=#1,draw=#1,rounded corners=.3pt*\binet@scale},%
     binet@line/.style={line width=.8pt*\binet@scale,draw,rounded corners=.125pt*\binet@scale,#1},%
     binet@@pathfade/.style n args={3}{
-        postaction={decorate,decoration={markings,
-        mark=between positions 0 and \pgfdecoratedpathlength step #1/3.75*\binet@scale with {
-        \pgfmathsetmacro\binet@gradient{multiply(divide(\pgfkeysvalueof{/pgf/decoration/mark info/distance from start}, \pgfdecoratedpathlength),100)};
-        \pgfsetfillcolor{#3!\binet@gradient!#2};
-        \pgfpathcircle{\pgfpointorigin}{#1*\binet@scale};
-        \pgfusepath{fill};}}},
+        decorate,decoration={markings,
+        mark=between positions 0 and \pgfdecoratedpathlength step #1*\binet@scale with {%
+        \binet@math@ptdiv@dim\@tmp{\pgfkeysvalueof{/pgf/decoration/mark info/distance from start}*100}{\pgfdecoratedpathlength}%
+        \pgfsetfillcolor{#3!\@tmp!#2}\pgfpathcircle\pgfpointorigin{#1*\binet@scale}\pgfusepath{fill}%
+        }},
     },
     binet@pathfade/.style 2 args={binet@@pathfade={.45pt}{#1}{#2}},
 }

@@ -53,7 +53,7 @@
     \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {--(\x, \y)}--}%
 \fi\fi\fi}
 \def\binet@route@lines{
-    \binet@math@min@two\@tmp\binet@lines@max@count{\the\numexpr\c@binet@block@count*\tw@-\@ne}
+    \binet@math@min@two\@tmp\binet@lines@max@count{\the\numexpr\c@binet@block@count*2-1}
     \binet@math@getrand@int\binet@lines@to@draw\binet@lines@min@count\@tmp
     \binet@debug{Got '\number\c@binet@block@count' blocks connect up to '\binet@lines@to@draw' lines}
     \begin{pgfonlayer}{background}
