@@ -95,7 +95,6 @@
 \binet@update@present@squares
 % clear the result queue
 \ResetQueue{binet@bfs@routing@result}%
-% TODO: same for end block with endl
 \edef\@tmp{(\center@start@x/\center@start@y)->(\center@end@x/\center@end@y)[\binet@width x\binet@height]}
 \expandafter\GetShortestPath\@tmp{binet@CheckBlock}{binet@bfs@routing@result}
 \binet@debug{Result: (\GetQueue{binet@bfs@routing@result})}
@@ -103,7 +102,5 @@
 % reinsert the selected blocks in the block mask
 \binet@single@block@specialblock{#1}{block}%
 \binet@single@block@specialblock{#2}{block}%
-\binet@update@present@squares
-}
-
+\binet@update@present@squares}
 \endinput
