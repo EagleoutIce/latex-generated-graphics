@@ -43,8 +43,14 @@
 \def\binet@@@fronte@draw@block[#1](#2,#3,#4,#5)[#6]{%
     % assure 1 counter
     \advance\c@binet@block@count\@ne
+    % set blocks for autoroot
+    \setblock{x}{#2-\binet@inset@x}\setblock{y}{#3-\binet@inset@y}%
+    \setblock{w}{#4+\binet@inset@x}\setblock{h}{#5+\binet@inset@y}%
+    \setblock{c}{#1}%
+    \binet@debug{Block[\get{c}](\get{x},\get{y},\get{w},\get{h})}%
     % compensate inset!
-    \binet@draw@single@@block{{#2-\binet@inset@x},{#3-\binet@inset@y}}{#1}{#4+\binet@inset@x}{#5+\binet@inset@y}{#6}%
+    \binet@draw@single@@block{\get{x},\get{y}}{\get{c}}{\get{w}}{\get{h}}{#6}%
+    \binet@single@block@block
 }
 
 \def\binet@getblock@#1#2{\csname binet@block@#1@#2\endcsname}
@@ -60,7 +66,7 @@
 
 \def\binet@get@consecutive@x#1{%
 % do not run if already known 0
-\ifnum\binet@m@max@of@y{\number\c@binet@y}=\z@\else
+\ifnum\binet@m@max@of@y{\number\c@binet@y}=0\else
 \c@binet@a\z@% current
 \def\@binet@con@x{0}% maximum
 \c@binet@x#1\relax% start x

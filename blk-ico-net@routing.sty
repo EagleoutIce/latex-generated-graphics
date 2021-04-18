@@ -36,10 +36,11 @@
     \binet@load@p@xy{binet-block-\binet@lines@end}>\binet@end@x,\binet@end@y;
     \binet@route@lines@bfs{\binet@lines@start}{\binet@lines@end}%
     \ifx\binet@bfs@routing@result\@empty
-    %BFS CALL: \binet@route@lines@bfs{\binet@lines@start}{\binet@lines@end}
     \edef\@tmp{\the\numexpr\binet@end@x-\binet@start@x}
+    \typeout{Got: \@tmp\ as number of interest by \binet@end@x-\binet@start@x}
     \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@x\@tmp
     \edef\@tmp{\the\numexpr\binet@end@y-\binet@start@y}
+    \typeout{Got: \@tmp\ as second number of interest by \binet@end@x-\binet@start@x}
     \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@y\@tmp
     \ifdim\binet@delta@x\p@=\z@\relax \binet@@dl@{--}\else
         \ifdim\binet@delta@y\p@=\z@\relax \binet@@dl@{--}\else
@@ -52,7 +53,8 @@
     \else
     \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {--(\x, \y)}--}%
 \fi\fi\fi}
-\def\binet@route@lines{
+\def\binet@route@lines{%
+    \ifnum\c@binet@block@count>1
     \binet@math@min@two\@tmp\binet@lines@max@count{\the\numexpr\c@binet@block@count*\tw@-\@ne}
     \binet@math@getrand@int\binet@lines@to@draw\binet@lines@min@count\@tmp
     \binet@debug{Got '\number\c@binet@block@count' blocks connect up to '\binet@lines@to@draw' lines}
@@ -62,7 +64,7 @@
         \binet@route@lines@pick@ab
         \advance\c@binet@c\@ne
     }
-    \end{pgfonlayer}
+    \end{pgfonlayer}\fi
 }
 
 % run a breadth first search between #1 and #2 in the given matrix
