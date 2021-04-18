@@ -6,6 +6,7 @@
 \usepackage[cpalette,debug]{blk-ico-net}% pathfade
 
 \begin{document}
+\iffalse
 \begin{center}
     \BlkIcoRandomNet[square=80,grid,max block count=60,max line count=40,min line count=5,frame,scale=3]
 \end{center}
@@ -15,13 +16,26 @@
 \BlkIcoRandomNet[frame,grid,max block count=10,max line count=15,scale=2]
 }
 \end{center}
-
+\fi
 % manual fail of routing
 \begin{center}
     \BlkIcoNet[square=30,grid,scale=3,frame]{
-        \block(0,0,5,4)
-        \block(4,6,5,4)
-        \autoroot
+         \block(0,10,5,4)
+         \block(5,10,5,4)
+        \block(10,10,5,4)
+        \block(15,10,5,4)
+        \block(20,10,5,4)
+        \block(25,10,5,4)
+        \block(15,2,5,4)
+        \block(15,16,5,4)
+        \block(8,16,5,4)
+        \block(22,16,5,4)
+        % TODO: allow custom labels
+        \debugmatrix
+        \singleautoroot{7}{8}
+        \singleautoroot{7}{9}
+        \singleautoroot{7}{10}
+        % \autoroot
     }
 \end{center}
 \end{document}

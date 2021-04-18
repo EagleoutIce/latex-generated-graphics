@@ -61,11 +61,11 @@
 \colorlet{binet@framegray}{gray!60!lightgray}
 \colorlet{binet@gridgray}{lightgray}
 \tikzset{%
-    binet@outer@roundings/.style={rounded corners=.85pt*\binet@scale},
-    binet@frame/.style={draw,line width=.25pt,binet@framegray,binet@outer@roundings},
-    binet@grid/.style={binet@gridgray,line width=.05pt,step=\binet@grid@step},
-    binet@block/.style={fill=#1,draw=#1,rounded corners=.3pt*\binet@scale},%
-    binet@line/.style={line width=.8pt*\binet@scale,draw,rounded corners=.125pt*\binet@scale,#1},%
+    binet@outer@roundings/.style={rounded corners=.85\p@*\binet@scale},
+    binet@frame/.style={draw,line width=.25\p@,binet@framegray,binet@outer@roundings},
+    binet@grid/.style={binet@gridgray,line width=.05\p@,step=\binet@grid@step},
+    binet@block/.style={fill=#1,draw=#1,rounded corners=.3\p@*\binet@scale},%
+    binet@line/.style={line width=.8\p@*\binet@scale,draw,rounded corners=.35\p@*\binet@scale,#1},%
     binet@@pathfade/.style n args={3}{
         postaction={decorate,decoration={markings,
         mark=between positions 0 and \pgfdecoratedpathlength step #1/3.75*\binet@scale with {

@@ -17,15 +17,9 @@
 
 \def\binet@@dl@#1{\binet@dl@root (binet-block-\binet@lines@start) #1 (binet-block-\binet@lines@end);}
 
-\def\binet@route@lines@pick@ab{%
-% pick first block
-\binet@math@getrand@int\binet@lines@start1\c@binet@block@count
-% target: remove one and add mod total to avoid same
-\pgfmathsetmacro\binet@lines@end{int(mod(\binet@lines@start+random(1,\c@binet@block@count-1),\c@binet@block@count))}%
-\ifnum\binet@lines@end=0
-    \ifnum\binet@lines@start=1 \def\binet@lines@end{2}\else
-    \def\binet@lines@end{1}\fi
-\fi
+\def\binet@route@lines@frontend@findroute@#1#2{\rootlayer\binet@route@lines@findroute@{#1}{#2}\endrootlayer}
+\def\binet@route@lines@findroute@#1#2{%
+\edef\binet@lines@start{#1}\edef\binet@lines@end{#2}%
 % do not draw same twice:
 \ifcsname binet@line@\binet@lines@start @\binet@lines@end\endcsname\else
 \ifcsname binet@line@\binet@lines@end @\binet@lines@start\endcsname\else
@@ -36,23 +30,32 @@
     \binet@load@p@xy{binet-block-\binet@lines@end}>\binet@end@x,\binet@end@y;
     \binet@route@lines@bfs{\binet@lines@start}{\binet@lines@end}%
     \ifx\binet@bfs@routing@result\@empty
-    \edef\@tmp{\the\numexpr\binet@end@x-\binet@start@x}
-    \typeout{Got: \@tmp\ as number of interest by \binet@end@x-\binet@start@x}
-    \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@x\@tmp
-    \edef\@tmp{\the\numexpr\binet@end@y-\binet@start@y}
-    \typeout{Got: \@tmp\ as second number of interest by \binet@end@x-\binet@start@x}
-    \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@y\@tmp
-    \ifdim\binet@delta@x\p@=\z@\relax \binet@@dl@{--}\else
-        \ifdim\binet@delta@y\p@=\z@\relax \binet@@dl@{--}\else
-            \ifdim\binet@delta@y\p@>\binet@delta@x\p@\relax
-                \binet@@dl@{|-}\else
-                \binet@@dl@{-|}
+        \edef\@tmp{\the\dimexpr\binet@end@x-\binet@start@x}
+        \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@x\@tmp
+        \edef\@tmp{\the\dimexpr\binet@end@y-\binet@start@y}
+        \expandafter\pgfmathabs@\expandafter{\@tmp}\let\binet@delta@y\@tmp
+        \ifdim\binet@delta@x=\z@\relax \binet@@dl@{--}\else
+            \ifdim\binet@delta@y=\z@\relax \binet@@dl@{--}\else
+                \ifdim\binet@delta@y<\binet@delta@x\relax
+                    \binet@@dl@{|-}\else
+                    \binet@@dl@{-|}
+                \fi
             \fi
         \fi
-    \fi
     \else
     \binet@@dl@{ foreach \x/\y in \binet@bfs@routing@result {--(\x, \y)}--}%
 \fi\fi\fi}
+\def\binet@route@lines@pick@ab{%
+% pick first block
+\binet@math@getrand@int\binet@lines@start1\c@binet@block@count
+% target: remove one and add mod total to avoid same
+\pgfmathsetmacro\binet@lines@end{int(mod(\binet@lines@start+random(1,\c@binet@block@count-1),\c@binet@block@count))}%
+\ifnum\binet@lines@end=0
+    \ifnum\binet@lines@start=1 \def\binet@lines@end{2}\else
+    \def\binet@lines@end{1}\fi
+\fi
+\binet@route@lines@findroute@{\binet@lines@start}{\binet@lines@end}%
+}
 \def\binet@route@lines{%
     \ifnum\c@binet@block@count>1
     \binet@math@min@two\@tmp\binet@lines@max@count{\the\numexpr\c@binet@block@count*\tw@-\@ne}
