@@ -30,4 +30,9 @@
     \edef\pgfmathresult{\the\c@pgfmath@counta}\pgfmath@smuggleone{\pgfmathresult}\endgroup
     \edef#1{\pgfmathresult}%
 }
+
+\def\binet@math@strip#1.#2\@nil{#1}
+\def\binet@math@ptdiv@dim#1#2#3{%
+    \expandafter\def\expandafter#1\expandafter{\expandafter\rem@pt\the\dimexpr#2/\expandafter\binet@math@strip#3\@nil}%
+}
 \endinput
