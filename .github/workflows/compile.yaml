@@ -5,26 +5,21 @@ name: Compile examples
     - master
     - main
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout git repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
-        lfs: true
         submodules: true
-    - name: Setup Python environment for sltx
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
-    - name: Setup and run sltx-install
-      run: |
-        pip install sltx
-        echo "tx-default" | sltx docker
     - name: Compile the Documents
       run: |
-        sltx compile --root --profile "tx-default" "showcase-blk-ico-net.tex" "showcase-rorschach.tex"
+        docker run --rm -v "$PWD":/work -w /work texlive/texlive:latest \
+          latexmk -interaction=nonstopmode -halt-on-error
     - name: Commit
       run: |
         git config --local user.email "action@github.com"

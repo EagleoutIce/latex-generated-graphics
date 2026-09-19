@@ -1,0 +1,6 @@
+[submodule "deps/latex-algorithm-bfs"]
+	path = deps/latex-algorithm-bfs
+	url = https://github.com/EagleoutIce/latex-algorithm-bfs
+[submodule "deps/color-palettes"]
+	path = deps/color-palettes
+	url = https://github.com/EagleoutIce/color-palettes
